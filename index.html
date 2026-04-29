@@ -1,0 +1,3189 @@
+
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Hola! Spanish Curriculum</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;family=Crimson+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; margin: 0; }
+    * { font-family: 'Nunito', sans-serif; }
+    .serif { font-family: 'Crimson Pro', serif; }
+
+    .nav-tab { transition: all 0.3s ease; cursor: pointer; position: relative; }
+    .nav-tab.active { background: var(--accent); color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .nav-tab:not(.active):hover { background: rgba(255,255,255,0.8); transform: translateY(-1px); }
+
+    .card-enter { animation: cardIn 0.4s ease forwards; opacity: 0; }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+    .pulse-glow { animation: glow 2s ease-in-out infinite alternate; }
+    @keyframes glow { from { box-shadow: 0 0 8px rgba(234,88,12,0.3); } to { box-shadow: 0 0 20px rgba(234,88,12,0.6); } }
+
+    .audio-btn { transition: all 0.2s ease; }
+    .audio-btn:hover { transform: scale(1.08); }
+    .audio-btn:active { transform: scale(0.95); }
+    .audio-btn.playing { animation: audioPulse 0.6s ease-in-out infinite; }
+    @keyframes audioPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+    .activity-card { transition: all 0.3s ease; border-left: 4px solid transparent; }
+    .activity-card:hover { border-left-color: var(--accent); transform: translateX(4px); }
+
+    .day-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .moderator-script { border-left: 4px solid var(--accent); padding: 12px 16px; margin: 8px 0; border-radius: 0 8px 8px 0; }
+    .moderator-script::before { content: '🗣️ Say:'; display: block; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+
+    .vocab-row { transition: all 0.2s ease; }
+    .vocab-row:hover { transform: translateX(4px); }
+
+    :root {
+      --bg: #F0F9FF;
+      --surface: #FFFFFF;
+      --text: #1E3A8A;
+      --accent: #0EA5E9;
+      --accent2: #0369A1;
+    }
+
+    .age-tab { transition: all 0.2s ease; cursor: pointer; padding: 6px 16px; border-radius: 999px; font-weight: 700; font-size: 0.85rem; }
+    .age-tab.active-age { background: var(--accent); color: #fff; }
+    .age-tab:not(.active-age) { background: rgba(0,0,0,0.06); color: var(--text); }
+    .age-tab:not(.active-age):hover { background: rgba(0,0,0,0.1); }
+
+    .scroll-container { scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.15) transparent; }
+    .scroll-container::-webkit-scrollbar { width: 6px; }
+    .scroll-container::-webkit-scrollbar-track { background: transparent; }
+    .scroll-container::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  
+    /* Added feature styles from Lesson 1 */
+    .feature-btn { transition: all 0.2s ease; }
+    .feature-btn:hover { transform: translateY(-1px); }
+    .flashcard-deck-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .fc-card-container {
+      perspective: 1200px;
+      width: 100%;
+      max-width: 300px;
+      aspect-ratio: 3/4;
+    }
+    .fc-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .fc-card-inner.flipped { transform: rotateY(180deg); }
+    .fc-card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 1.25rem;
+      overflow: hidden;
+    }
+    .fc-card-back { transform: rotateY(180deg); }
+    .fc-progress-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      transition: all 0.3s ease;
+      background: rgba(0,0,0,0.15); cursor: pointer;
+    }
+    .fc-progress-dot.active {
+      width: 24px; border-radius: 4px; background: var(--accent);
+    }
+    .fc-nav-btn { transition: all 0.2s ease; }
+    .fc-nav-btn:hover { transform: scale(1.08); }
+    .fc-usage-tag {
+      display: inline-block; padding: 4px 12px; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.03em;
+    }
+
+    .flashcard-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flashcard-inner.flipped { transform: rotateY(180deg); }
+    .flashcard-front, .flashcard-back {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      cursor: pointer;
+    }
+    .flashcard-back { transform: rotateY(180deg); }
+
+  
+    .dropdown-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease; }
+    .dropdown-content.open { max-height: 3000px; padding-top: 12px; padding-bottom: 12px; }
+    .dd-arrow { transition: transform 0.3s ease; }
+
+  
+    .overview-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+    }
+    .overview-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.10) !important;
+      border-color: rgba(14,165,233,0.25) !important;
+    }
+
+    .overview-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .sound-card, .vocab-card {
+      background: var(--surface);
+      border: 1px solid rgba(14,165,233,0.14);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .sound-card:hover, .vocab-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(2, 132, 199, 0.14);
+      border-color: rgba(14,165,233,0.32);
+    }
+
+    .sound-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(14,165,233,0.10);
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+    }
+
+    .phonetic-pill {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(14,165,233,0.08);
+      color: var(--accent2);
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .core-word-card {
+      border-color: rgba(37,99,235,0.28) !important;
+      background: #eff6ff;
+    }
+    .extra-word-card {
+      border-color: rgba(124,58,237,0.20) !important;
+      background: #f5f3ff;
+    }
+    .core-extra-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      margin-bottom: 10px;
+    }
+    .core-extra-badge.core {
+      background: rgba(37,99,235,0.12);
+      color: #1d4ed8;
+    }
+    .core-extra-badge.extra {
+      background: rgba(124,58,237,0.12);
+      color: #7c3aed;
+    }
+
+    .lesson-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 16px;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    .lesson-nav a, .lesson-nav button {
+      pointer-events: auto;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 14px;
+      background: rgba(255,255,255,0.95);
+      color: #0f172a;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    .lesson-nav a:active, .lesson-nav button:active { transform: scale(0.98); }
+    @media (min-width: 768px) {
+      .lesson-nav { bottom: 20px; padding: 0 24px; }
+    }
+
+  
+/* spacing improvements */
+.section:first-of-type { margin-top: 24px; }
+.section { margin-bottom: 32px; }
+h2 { margin-top: 8px; margin-bottom: 12px; }
+h2:first-of-type { margin-top: 0; }
+.top-divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 16px 0 24px 0;
+}
+
+
+/* spacing fix */
+header { margin-bottom: 0; }
+.nav-tabs, .tabs { margin-top: 8px !important; }
+body { margin-top: 0; }
+
+</style>
+  <style>body { box-sizing: border-box; }
+/* spacing improvements */
+.section:first-of-type { margin-top: 24px; }
+.section { margin-bottom: 32px; }
+h2 { margin-top: 8px; margin-bottom: 12px; }
+h2:first-of-type { margin-top: 0; }
+.top-divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 16px 0 24px 0;
+}
+
+
+/* spacing fix */
+header { margin-bottom: 0; }
+.nav-tabs, .tabs { margin-top: 8px !important; }
+body { margin-top: 0; }
+
+</style>
+ 
+  <!-- PWA / mobile install support -->
+  <meta name="theme-color" content="#0EA5E9">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SpeakThatSpanish">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+
+ </head>
+ <body class="h-full" style="background: var(--bg); color: var(--text);">
+  <div id="app" class="h-full w-full flex flex-col overflow-hidden">
+   <!-- Header -->
+   <header id="app-header" class="w-full px-4 py-3 flex items-center justify-between flex-shrink-0" style="background: linear-gradient(135deg, #0C4A6E, #0369A1, #0EA5E9);">
+    <div class="flex items-center gap-3">
+     <div class="w-10 h-10 rounded-xl flex items-center justify-center text-2xl" style="background: rgba(255,255,255,0.2);">
+      🇪🇸
+     </div>
+     <div>
+      <a href="index.html" class="text-white no-underline"><h1 id="main-title" class="text-white font-black text-lg leading-tight">¡SpeakThatSpanish!</h1></a>
+      <p id="lesson-title" class="text-sky-200 text-xs font-semibold">Lesson 1: Greetings &amp; Sounds</p>
+     </div>
+    </div>
+    <div class="text-right">
+     <label for="lesson-jump" class="sr-only">Choose lesson</label>
+     <select id="lesson-jump" class="text-xs font-bold rounded-md px-2 py-1 border-0" style="background: rgba(255,255,255,0.18); color: #e0f2fe;" onchange="if(this.value) window.location.href=this.value;">
+      <option value="lesson1.html" selected style="color:#0f172a;">Lección 1</option>
+      <option value="lesson2.html" style="color:#0f172a;">Lección 2</option>
+      <option value="lesson3.html" style="color:#0f172a;">Lección 3</option>
+      <option value="lesson4.html" style="color:#0f172a;">Lección 4</option>
+      <option value="lesson5.html" style="color:#0f172a;">Lección 5</option>
+      <option value="lesson6.html" style="color:#0f172a;">Lección 6</option>
+      <option value="lesson7.html" style="color:#0f172a;">Lección 7</option>
+      <option value="lesson8.html" style="color:#0f172a;">Lección 8</option>
+     </select>
+    </div>
+   </header>
+<!-- Navigation Tabs -->
+   <nav id="main-nav" class="w-full flex-shrink-0 px-3 py-2 flex gap-1.5 overflow-x-auto scroll-container" style="background: rgba(14,165,233,0.08);">
+    <button class="nav-tab active text-xs font-bold px-3 py-2 rounded-lg whitespace-nowrap" data-tab="overview" onclick="switchTab('overview')">📋 Overview</button> <button class="nav-tab text-xs font-bold px-3 py-2 rounded-lg whitespace-nowrap" data-tab="day1" onclick="switchTab('day1')">🗣️ Day 1</button> <button class="nav-tab text-xs font-bold px-3 py-2 rounded-lg whitespace-nowrap" data-tab="day2" onclick="switchTab('day2')">✏️ Day 2</button> <button class="nav-tab text-xs font-bold px-3 py-2 rounded-lg whitespace-nowrap" data-tab="day3" onclick="switchTab('day3')">👂 Day 3</button> <button class="nav-tab text-xs font-bold px-3 py-2 rounded-lg whitespace-nowrap" data-tab="day4" onclick="switchTab('day4')">🎭 Day 4</button> <button class="nav-tab text-xs font-bold px-3 py-2 rounded-lg whitespace-nowrap" data-tab="day5" onclick="switchTab('day5')">🌎 Day 5</button> <button class="nav-tab text-xs font-bold px-3 py-2 rounded-lg whitespace-nowrap" data-tab="bonus" onclick="switchTab('bonus')">⭐ Bonus</button>
+   </nav><!-- Content Area -->
+   <main id="content-area" class="flex-1 overflow-y-auto scroll-container w-full">
+   </main>
+  </div>
+
+   
+  <script>
+    // ========== AUDIO ENGINE (Web Audio API) ==========
+    const AudioEngine = {
+      ctx: null,
+      speaking: false,
+      getCtx() {
+        if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        return this.ctx;
+      },
+      speak(text, options = {}) {
+        return new Promise((resolve) => {
+          if (!('speechSynthesis' in window)) { resolve(); return; }
+          window.speechSynthesis.cancel();
+          const { lang = 'es-ES', gender = 'neutral', rate = 0.82 } = options || {};
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = lang;
+          u.rate = rate;
+          u.pitch = gender === 'female' ? 1.18 : gender === 'male' ? 0.88 : 1.0;
+
+          const voices = window.speechSynthesis.getVoices().filter(v => v.lang && v.lang.startsWith('es'));
+          const femaleHints = ['female','woman','mujer','sofia','monica','helena','lucia'];
+          const maleHints = ['male','man','hombre','jorge','diego','carlos','pablo','juan'];
+
+          let chosenVoice = null;
+          if (gender === 'female') {
+            chosenVoice = voices.find(v => femaleHints.some(h => (v.name || '').toLowerCase().includes(h)));
+          } else if (gender === 'male') {
+            chosenVoice = voices.find(v => maleHints.some(h => (v.name || '').toLowerCase().includes(h)));
+          }
+          if (!chosenVoice) chosenVoice = voices[0];
+          if (chosenVoice) u.voice = chosenVoice;
+
+          u.onend = () => { this.speaking = false; resolve(); };
+          u.onerror = () => { this.speaking = false; resolve(); };
+          this.speaking = true;
+          window.speechSynthesis.speak(u);
+        });
+      },
+      playTone(freq, duration = 0.15) {
+        const ctx = this.getCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = freq;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + duration);
+      },
+      playSuccess() { this.playTone(523, 0.12); setTimeout(() => this.playTone(659, 0.12), 130); setTimeout(() => this.playTone(784, 0.2), 260); },
+      playClick() { this.playTone(800, 0.05); }
+    };
+
+    // Preload voices
+    if ('speechSynthesis' in window) {
+      speechSynthesis.getVoices();
+      speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+    }
+
+    // ========== CURRICULUM DATA ==========
+    const VOCAB = [
+      { es: '¡Hola!', en: 'Hello!', phonetic: 'OH-lah', core: true },
+      { es: 'Buenos días', en: 'Good morning', phonetic: 'BWEH-nohs DEE-ahs', core: true },
+      { es: 'Buenas tardes', en: 'Good afternoon', phonetic: 'BWEH-nahs TAR-dehs', core: true },
+      { es: 'Buenas noches', en: 'Good evening / Good night', phonetic: 'BWEH-nahs NOH-chehs', core: true },
+      { es: 'Adiós', en: 'Goodbye', phonetic: 'ah-dee-OHS', core: true },
+      { es: '¡Hasta luego!', en: 'See you later!', phonetic: 'AH-stah LWEH-goh', core: true },
+      { es: 'Hasta mañana', en: 'See you tomorrow', phonetic: 'AH-stah mah-NYAH-nah', core: true },
+      { es: 'Gracias', en: 'Thank you', phonetic: 'GRAH-see-ahs', core: true },
+      { es: 'Muchas gracias', en: 'Thank you very much', phonetic: 'MOO-chahs GRAH-see-ahs', core: true },
+      { es: 'De nada', en: "You're welcome", phonetic: 'deh NAH-dah', core: true },
+      { es: 'Por favor', en: 'Please', phonetic: 'por fah-VOR', core: true },
+      { es: '¿Cómo se dice?', en: 'How do you say?', phonetic: 'KOH-moh seh DEE-seh', core: false },
+      { es: 'Se dice', en: 'You say / It is said', phonetic: 'seh DEE-seh', core: false },
+      { es: 'Bienvenido', en: 'Welcome (to a boy/man)', phonetic: 'byen-beh-NEE-doh', core: false },
+      { es: 'Bienvenida', en: 'Welcome (to a girl/woman)', phonetic: 'byen-beh-NEE-dah', core: false },
+      { es: 'Con permiso', en: 'Excuse me (to pass by)', phonetic: 'kohn pehr-MEE-soh', core: true },
+      { es: 'Sí', en: 'Yes', phonetic: 'see', core: true },
+      { es: 'No', en: 'No', phonetic: 'noh', core: true },
+      { es: 'Perdón', en: 'Excuse me / Sorry', phonetic: 'pehr-DOHN', core: true },
+      { es: 'Señor', en: 'Mr. / Sir', phonetic: 'seh-NYOR', core: false },
+      { es: 'Señora', en: 'Mrs. / Ma\'am', phonetic: 'seh-NYOH-rah' },
+    ];
+
+    const PRONUNCIATION_NOTES = [
+      { sound: 'A', example: '\"ah\" like in \"father\"', spanish: 'gracias, mañana', icon: '🅰️' },
+      { sound: 'E', example: '\"eh\" like in \"bed\"', spanish: 'de nada, buenas', icon: '🔤' },
+      { sound: 'I', example: '\"ee\" like in \"see\"', spanish: 'sí, días, adiós', icon: '👁️' },
+      { sound: 'O', example: '\"oh\" like in \"go\"', spanish: 'hola, buenos, favor', icon: '⭕' },
+      { sound: 'U', example: '\"oo\" like in \"food\"', spanish: 'luego, muchas', icon: '🌙' },
+      { sound: 'H', example: 'Always silent in Spanish!', spanish: 'hola, hasta', icon: '🤫' },
+      { sound: 'Ñ', example: '\"ny\" like in \"canyon\"', spanish: 'mañana, señor', icon: '🎵' },
+      { sound: 'LL', example: '\"y\" like in \"yes\"', spanish: 'lluvia (rain), llama (flame), llamada (call)', icon: '✨' },
+      { sound: 'R', example: 'Lightly tapped (like a quick \"d\")', spanish: 'gracias, favor, por', icon: '🥁' },
+      { sound: 'D (soft)', example: 'Between vowels, soft like \"th\" in \"the\"', spanish: 'de nada, adiós', icon: '💨' },
+    ];
+
+    const DIALOGUES = [
+      {
+        title: 'Meeting a Neighbor in the Morning',
+        lines: [
+          { speaker: 'María', gender: 'female', text: '¡Buenos días, señor Carlos!', en: 'Good morning, Mr. Carlos!' },
+          { speaker: 'Carlos', gender: 'male', text: '¡Buenos días, María! ¡Hola!', en: 'Good morning, María! Hello!' },
+          { speaker: 'María', gender: 'female', text: '¿Cómo está usted?', en: 'How are you?' },
+          { speaker: 'Carlos', gender: 'male', text: 'Muy bien, gracias. ¿Y usted?', en: 'Very well, thank you. And you?' },
+          { speaker: 'María', gender: 'female', text: 'Muy bien también, gracias.', en: 'Very well too, thank you.' },
+          { speaker: 'Carlos', gender: 'male', text: '¡Qué bueno! Hasta luego.', en: 'That is good! See you later.' },
+          { speaker: 'María', gender: 'female', text: '¡Hasta luego! ¡Adiós!', en: 'See you later! Goodbye!' }
+        ]
+      },
+      {
+        title: 'At a Store in the Afternoon',
+        lines: [
+          { speaker: 'Ana', gender: 'female', text: '¡Buenas tardes!', en: 'Good afternoon!' },
+          { speaker: 'Vendor', gender: 'male', text: '¡Buenas tardes, señora! ¡Bienvenida!', en: 'Good afternoon, ma’am! Welcome!' },
+          { speaker: 'Ana', gender: 'female', text: 'Gracias. ¿Cómo está?', en: 'Thank you. How are you?' },
+          { speaker: 'Vendor', gender: 'male', text: 'Estoy muy bien, gracias. ¿Y usted?', en: 'I am very well, thank you. And you?' },
+          { speaker: 'Ana', gender: 'female', text: 'Muy bien también. Por favor, necesito pan.', en: 'Very well too. Please, I need bread.' },
+          { speaker: 'Vendor', gender: 'male', text: 'Sí, señora. Aquí tiene.', en: 'Yes, ma’am. Here you are.' },
+          { speaker: 'Ana', gender: 'female', text: 'Con permiso.', en: 'Excuse me.' },
+          { speaker: 'Ana', gender: 'female', text: 'Muchas gracias.', en: 'Thank you very much.' },
+          { speaker: 'Vendor', gender: 'male', text: '¡De nada! ¡Hasta luego!', en: "You're welcome! See you later!" },
+          { speaker: 'Ana', gender: 'female', text: '¡Adiós!', en: 'Goodbye!' }
+        ]
+      },
+      {
+        title: 'Saying Goodnight',
+        lines: [
+          { speaker: 'Papá', gender: 'male', text: '¡Buenas noches, Sofía!', en: 'Good night, Sofía!' },
+          { speaker: 'Sofía', gender: 'female', text: '¡Buenas noches, papá!', en: 'Good night, Dad!' },
+          { speaker: 'Papá', gender: 'male', text: '¿Cómo estás hoy?', en: 'How are you today?' },
+          { speaker: 'Sofía', gender: 'female', text: 'Estoy bien, pero cansada.', en: 'I am well, but tired.' },
+          { speaker: 'Papá', gender: 'male', text: 'Sí, hoy fue un día largo.', en: 'Yes, today was a long day.' },
+          { speaker: 'Sofía', gender: 'female', text: 'Gracias por la historia, papá.', en: 'Thank you for the story, Dad.' },
+          { speaker: 'Papá', gender: 'male', text: 'De nada, Sofía. Hasta mañana.', en: 'You’re welcome, Sofía. See you tomorrow.' },
+          { speaker: 'Sofía', gender: 'female', text: 'Hasta mañana. Adiós.', en: 'See you tomorrow. Goodbye.' }
+        ]
+      },
+    ];
+
+
+        const DAY_DIALOGUES = {
+      day1: {
+        young: [
+          {
+            title: 'Sample Dialogue 1 — Vowel Focus',
+            note: 'Practices clean vowel sounds and a simple greeting.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Hola!', en: 'Hello!' },
+              { speaker: 'B', gender: 'male', text: '¡Hola!', en: 'Hello!' },
+              { speaker: 'A', gender: 'female', text: '¡Adiós!', en: 'Goodbye!' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 2 — Time of Day',
+            note: 'Matches greeting-by-time practice.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Buenos días!', en: 'Good morning!' },
+              { speaker: 'B', gender: 'male', text: '¡Buenos días!', en: 'Good morning!' },
+              { speaker: 'A', gender: 'female', text: '¡Hasta luego!', en: 'See you later!' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 3 — Goodbye Practice',
+            note: 'Uses the goodbye phrases from Day 1.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Buenas noches!', en: 'Good evening / Good night!' },
+              { speaker: 'B', gender: 'male', text: '¡Buenas noches!', en: 'Good evening / Good night!' },
+              { speaker: 'A', gender: 'female', text: 'Hasta mañana.', en: 'See you tomorrow.' }
+            ]
+          }
+        ],
+        older: [
+          {
+            title: 'Sample Dialogue 1 — Vowels & Courtesy',
+            note: 'Fits the vowel and pronunciation work.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Hola!', en: 'Hello!' },
+              { speaker: 'B', gender: 'male', text: '¡Buenos días!', en: 'Good morning!' },
+              { speaker: 'A', gender: 'female', text: 'Gracias.', en: 'Thank you.' },
+              { speaker: 'B', gender: 'male', text: 'De nada.', en: 'You’re welcome.' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 2 — Stress & Greeting Meaning',
+            note: 'Matches stress rules and greeting vocabulary.',
+            lines: [
+              { speaker: 'A', gender: 'male', text: '¡Buenas tardes, señora!', en: 'Good afternoon, ma’am!' },
+              { speaker: 'B', gender: 'female', text: '¡Buenas tardes!', en: 'Good afternoon!' },
+              { speaker: 'A', gender: 'male', text: 'Hasta luego.', en: 'See you later.' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 3 — Pronunciation Detective',
+            note: 'Uses words learners must say clearly.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Hasta mañana!', en: 'See you tomorrow!' },
+              { speaker: 'B', gender: 'male', text: '¡Adiós!', en: 'Goodbye!' },
+              { speaker: 'A', gender: 'female', text: 'Muchas gracias.', en: 'Thank you very much.' }
+            ]
+          }
+        ]
+      },
+      day2: {
+        young: [
+          {
+            title: 'Sample Dialogue 1 — Store Talk',
+            note: 'Matches please/thank you practice.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Hola! Por favor', en: 'Hello! Please' },
+              { speaker: 'B', gender: 'male', text: 'Hola, sí.', en: 'Hi. Yes.' },
+              { speaker: 'A', gender: 'female', text: '¡Gracias!', en: 'Thank you!' },
+              { speaker: 'B', gender: 'male', text: 'De nada.', en: 'You’re welcome.' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 2 — Door Greeting',
+            note: 'Fits the doorbell greeting activity.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Buenos días!', en: 'Good morning!' },
+              { speaker: 'B', gender: 'male', text: '¡Hola!', en: 'Hello!' },
+              { speaker: 'A', gender: 'female', text: '¡Hasta luego!', en: 'See you later!' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 3 — How Do You Say?',
+            note: 'Matches the question-and-answer game.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¿Cómo se dice hello?', en: 'How do you say hello?' },
+              { speaker: 'B', gender: 'male', text: 'Se dice hola.', en: 'You say hola.' }
+            ]
+          }
+        ],
+        older: [
+          {
+            title: 'Sample Dialogue 1 — Meaning & Context',
+            note: 'Fits context mapping and time-of-day choices.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Buenos días, señor!', en: 'Good morning, sir!' },
+              { speaker: 'B', gender: 'male', text: '¡Buenos días!', en: 'Good morning!' },
+              { speaker: 'A', gender: 'female', text: '¡Adiós!', en: 'Goodbye!' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 2 — Scenario Response',
+            note: 'Fits scenario cards and spelling practice.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: 'Muchas gracias.', en: 'Thank you very much.' },
+              { speaker: 'B', gender: 'male', text: 'De nada.', en: 'You’re welcome.' },
+              { speaker: 'A', gender: 'female', text: 'Con permiso.', en: 'Excuse me.' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 3 — ¿Cómo se dice?',
+            note: 'Matches the circle challenge directly.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¿Cómo se dice good night?', en: 'How do you say good night?' },
+              { speaker: 'B', gender: 'male', text: 'Se dice buenas noches.', en: 'You say buenas noches.' },
+              { speaker: 'A', gender: 'female', text: 'Gracias.', en: 'Thank you.' }
+            ]
+          }
+        ]
+      },
+      day3: {
+        young: [
+          {
+            title: 'Sample Dialogue 1 — Listening for Greetings',
+            note: 'Simple listening target words.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Hola!', en: 'Hello!' },
+              { speaker: 'B', gender: 'male', text: '¡Buenos días!', en: 'Good morning!' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 2 — Echo Practice',
+            note: 'Good for repeating and catching mistakes.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: 'Gracias.', en: 'Thank you.' },
+              { speaker: 'B', gender: 'male', text: 'De nada.', en: 'You’re welcome.' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 3 — Night Goodbye',
+            note: 'Great for whisper chain or musical greetings.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Buenas noches!', en: 'Good night!' },
+              { speaker: 'B', gender: 'male', text: 'Hasta mañana.', en: 'See you tomorrow.' }
+            ]
+          }
+        ],
+        older: [
+          {
+            title: 'Sample Dialogue 1 — Dictation Ready',
+            note: 'Short and clear for writing what you hear.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Hola! ¡Buenos días!', en: 'Hello! Good morning!' },
+              { speaker: 'B', gender: 'male', text: '¡Buenos días!', en: 'Good morning!' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 2 — Listening Comprehension',
+            note: 'Fits the dialogue listening work.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: 'Muchas gracias, señor.', en: 'Thank you very much, sir.' },
+              { speaker: 'B', gender: 'male', text: 'De nada.', en: 'You’re welcome.' },
+              { speaker: 'A', gender: 'female', text: '¡Adiós!', en: 'Goodbye!' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 3 — Audio Story Prep',
+            note: 'Uses words learners can count and write down.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Buenas tardes!', en: 'Good afternoon!' },
+              { speaker: 'B', gender: 'male', text: 'Hola.', en: 'Hello.' },
+              { speaker: 'A', gender: 'female', text: 'Muchas gracias.', en: 'Thank you very much.' },
+              { speaker: 'B', gender: 'male', text: 'De nada.', en: 'You’re welcome.' }
+            ]
+          }
+        ]
+      },
+      day4: {
+        young: [
+          {
+            title: 'Sample Dialogue 1 — Greeting Card',
+            note: 'Fits making and reading greeting cards.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Buenos días!', en: 'Good morning!' },
+              { speaker: 'B', gender: 'male', text: '¡Hola!', en: 'Hello!' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 2 — Restaurant Role-Play',
+            note: 'Matches food and waiter role-play.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: 'Por favor.', en: 'Please.' },
+              { speaker: 'B', gender: 'male', text: 'Gracias.', en: 'Thank you.' },
+              { speaker: 'A', gender: 'female', text: 'De nada.', en: 'You’re welcome.' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 3 — Puppet Day',
+            note: 'Fits the puppet theater sequence.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Buenas noches!', en: 'Good night!' },
+              { speaker: 'B', gender: 'male', text: 'Hasta mañana.', en: 'See you tomorrow.' }
+            ]
+          }
+        ],
+        older: [
+          {
+            title: 'Sample Dialogue 1 — Skit Starter',
+            note: 'Fits the write-and-perform skit activity.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Buenas tardes, señora!', en: 'Good afternoon, ma’am!' },
+              { speaker: 'B', gender: 'male', text: '¡Hola!', en: 'Hello!' },
+              { speaker: 'A', gender: 'female', text: 'Por favor.', en: 'Please.' },
+              { speaker: 'B', gender: 'male', text: 'Gracias.', en: 'Thank you.' },
+              { speaker: 'A', gender: 'female', text: 'De nada. ¡Hasta luego!', en: 'You’re welcome. See you later!' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 2 — Shoot-Off Prompt Set',
+            note: 'Good phrases for fast-response practice.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¿Cómo se dice good morning?', en: 'How do you say good morning?' },
+              { speaker: 'B', gender: 'male', text: 'Se dice buenos días.', en: 'You say good morning.' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 3 — Performance Rhythm',
+            note: 'Fits rap, presentation, and confident speaking.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Hola!', en: 'Hello!' },
+              { speaker: 'B', gender: 'male', text: '¡Buenos días!', en: 'Good morning!' },
+              { speaker: 'A', gender: 'female', text: '¡Adiós!', en: 'Goodbye!' },
+              { speaker: 'B', gender: 'male', text: '¡Hasta luego!', en: 'See you later!' }
+            ]
+          }
+        ]
+      },
+      day5: {
+        young: [
+          {
+            title: 'Sample Dialogue 1 — Market Greeting',
+            note: 'A simple cultural greeting exchange for the morning.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Buenos días!', en: 'Good morning!' },
+              { speaker: 'B', gender: 'male', text: '¡Hola!', en: 'Hello!' },
+              { speaker: 'A', gender: 'female', text: 'Muchas gracias.', en: 'Thank you very much.' },
+              { speaker: 'B', gender: 'male', text: 'De nada.', en: 'You’re welcome.' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 2 — Formal Greeting',
+            note: 'Models respectful greetings with adults.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Buenos días, señora!', en: 'Good morning, ma’am!' },
+              { speaker: 'B', gender: 'female', text: '¡Buenos días!', en: 'Good morning!' },
+              { speaker: 'A', gender: 'female', text: 'Con permiso.', en: 'Excuse me.' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 3 — Goodbye at Night',
+            note: 'Uses the night farewell phrases from Lesson 1.',
+            lines: [
+              { speaker: 'A', gender: 'male', text: '¡Buenas noches!', en: 'Good night!' },
+              { speaker: 'B', gender: 'female', text: '¡Buenas noches!', en: 'Good night!' },
+              { speaker: 'A', gender: 'male', text: 'Hasta mañana.', en: 'See you tomorrow.' }
+            ]
+          }
+        ],
+        older: [
+          {
+            title: 'Sample Dialogue 1 — Cultural and Formal Greeting',
+            note: 'A respectful exchange that fits the Day 5 culture focus.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: '¡Buenos días, señor!', en: 'Good morning, sir!' },
+              { speaker: 'B', gender: 'male', text: '¡Buenos días!', en: 'Good morning!' },
+              { speaker: 'A', gender: 'female', text: 'Adios.', en: 'Bye.' },
+              { speaker: 'B', gender: 'male', text: '¡Hasta luego!', en: 'See you later!' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 2 — Polite Social Greeting',
+            note: 'Uses courtesy and formal address together.',
+            lines: [
+              { speaker: 'A', gender: 'male', text: '¡Buenas tardes, señora!', en: 'Good afternoon, ma’am!' },
+              { speaker: 'B', gender: 'female', text: '¡Buenas tardes!', en: 'Good afternoon!' },
+              { speaker: 'A', gender: 'male', text: 'Muchas gracias.', en: 'Thank you very much.' },
+              { speaker: 'B', gender: 'female', text: 'De nada.', en: 'You’re welcome.' }
+            ]
+          },
+          {
+            title: 'Sample Dialogue 3 — Departure Exchange',
+            note: 'Fits leave-taking in a polite cultural context.',
+            lines: [
+              { speaker: 'A', gender: 'female', text: 'Con permiso. Gracias.', en: 'Excuse me. Thank you.' },
+              { speaker: 'B', gender: 'male', text: 'De nada', en: 'Sure thing.' },
+              { speaker: 'A', gender: 'female', text: '¡Hasta mañana!', en: 'See you tomorrow!' },
+              { speaker: 'B', gender: 'male', text: '¡Adiós!', en: 'Goodbye!' }
+            ]
+          }
+        ]
+      }
+    };
+
+    // ========== ACTIVITY DATA ==========
+    
+const GRAMMAR_NOTES = [
+      { title: 'Gender agreement in greetings', note: 'In greetings, adjectives change to match the noun they describe. “Buenos días” uses buenos because días is masculine plural. “Buenas tardes” and “buenas noches” use buenas because tardes and noches are feminine plural.' },
+      { title: 'Excuse me differences', note: '“Perdón” or “disculpe” is used to apologize or get someone’s attention. “Con permiso” is used when you need to pass by politely.' },
+      { title: '¿Cómo se dice...?', note: 'Use this to ask how to say something in Spanish. A full answer begins with “Se dice...” followed by the word or phrase.' },
+      { title: 'Inverted punctuation', note: 'Spanish uses ¿ at the beginning of questions and ¡ at the beginning of exclamations.' }
+
+];
+
+const DAYS = {
+      day1: {
+        title: 'Day 1: Pronunciation',
+        subtitle: 'Learning to say and hear the new sounds',
+        icon: '🗣️',
+        color: '#DC2626',
+        young: [
+          {
+            title: 'Vowel Sound Parade',
+            time: '10 min',
+            materials: 'Vowel visual • <a href="https://canva.link/0yshd4yteqoubfr" target="_blank" class="text-blue-600 underline font-semibold">Show Visual</a> • Or write the vowels',
+            moderator: `Today we're going to learn the five magic sounds of Spanish! The 5 vowels (show the vowel visual). Every vowel in Spanish always makes the same sound — isn't that cool? Let's repeat them once through (click below to hear them). After that, we'll march around the room like a parade. Every time I say a vowel, you repeat it and do the action (indicated below)!`,
+            steps: [
+              '**A** (ah) — March and pat your tummy: Ah, ah, ah! Have everyone repeat.',
+              '**E** (eh) — Flap your arms like a bird: Eh, eh, eh!',
+              '**I** (ee) — Point to the ends of your mouth: Ee, ee, ee!',
+              '**O** (oh) — Make a big O with your arms above your head: Oh, oh, oh!',
+              '**U** (oo) — Pretend to be a ghost: Oo, oo, oo!',
+              'Do 3 rounds, getting faster each time. End with all 5 in a row: A, E, I, O, U!',
+              'Celebrate with clapping when everyone gets it right.',
+            ]
+          },
+          {
+            title: 'Hola! Wave Game',
+            time: '5 min',
+            materials: 'Visual of the word HOLA  • <a href="https://canva.link/75g4xibqhckaka1" target="_blank" class="text-blue-600 underline font-semibold">Show Visual</a>',
+            moderator: `Now let's learn our very first Spanish word: "¡Hola!" It means hello! (Show the word) But notice something — the H is silent! We don't say 'hoh-la,' we say 'OH-lah.' The H is sleeping! Let's practice.`,
+            steps: [
+              'Everyone walks around the room.',
+              'The moderator claps and everyone stops.',
+              'Everyone turns to the person or stuffed animal nearest them, waves and says, "¡Hola!".',
+              'Try whispering it, then saying it loud, then in a silly voice.',
+              'Point out: See? The H made no sound at all! It\'s a sneaky silent letter.',
+            ]
+          },
+          {
+            title: 'Greeting Time of Day Match',
+            time: '10 min',
+            materials: 'Optional: Paper with sun, afternoon sun, and moon drawn or • <a href="https://canva.link/s7rwc76ant3u96r" target="_blank" class="text-blue-600 underline font-semibold">Print Cards</a>',
+            moderator: `In Spanish, we say different hellos depending on what time of day it is! Let's learn three greetings. Stretch like you just woke up (optional: show a sun) and say "Buenos días!" which means good morning. Now put your hands on your hips (optional: show the sun with clouds) and say "Buenas tardes!" which means good afternoon. Now put your together and place them under your cheeck like you\re sleeping (optional: show the moon) and say "Buenas noches!" which means good evening or good night`,
+            steps: [
+              'Teach each phrase one at a time. Have everyone repeat 3 times each.',
+              'Practice the pronunciation: "Buenos días" BWEH-nohs DEE-ahs, "Buenas tardes" BWEH-nahs TAR-dehs, "Buenas noches" BWEH-nahs NOH-chehs — clap the syllables.', 
+              'Hold up pictures or do actions randomly and have kids call out the right greeting.',
+              'Speed round: do the actions or switch pictures faster and faster.',
+              'Let kids take turns being the action caller or the picture holder while others respond.',
+            ]
+          },
+          {
+            title: 'Goodbye Freeze Dance',
+            time: '8 min',
+            materials: 'Music (clapping or humming works too)',
+            moderator: `We learned hello, now let's learn goodbye! "¡Adiós!" means goodbye. "¡Hasta luego!" means see you later. And "Hasta mañana" means see you tomorrow! The ñ in "mañana" makes a special sound: 'nyah.' Let's do a freeze dance!`,
+            steps: [
+              'Everyone dances while moderator claps or plays music.',
+              'When the music stops, moderator calls out a goodbye phrase.',
+              'Everyone freezes and repeats the phrase together.',
+              'Practice each: "¡Adiós!" "¡Hasta luego!" "Hasta mañana!"',
+              'Focus on the ñ sound: practice nya, nya, nya then mah-NYAH-nah.',
+              'End by having everyone wave goodbye to each other using all three phrases.',
+      ]
+          },
+          {
+title: 'Spanish Greeting Cards',
+            time: '15 min',
+            materials: 'Paper, crayons/markers, stickers (optional)',
+            moderator: `Let's make greeting cards in Spanish! You're going to make a card for someone special. On the front, draw a picture, and on the inside, write a Spanish greeting! I'll help you with the spelling.`,
+            steps: [
+              'Fold paper in half to make a card.',
+              'Choose a greeting: morning card (Buenos días + sun drawing), goodbye card (Adiós + waving person), thank you card (Gracias + heart).',
+              'Moderator writes the Spanish phrase lightly in pencil if needed; child traces or copies it.',
+              'Note that in Spanish if you include an exclamation mark or a question mark at the end of the word or phrase, you also need to include it inverted at the beginning of the word or phrase, such as in the word ¡Hola!.',
+              'Decorate the card with drawings related to the greeting.',
+              'Practice reading the card aloud with correct pronunciation.',
+              'Deliver the card to a family member and say the greeting!',
+             ]
+          },
+        ],
+        
+        older: [
+          {
+            title: 'Vowel Sound System Workshop',
+            time: '12 min',
+            materials: 'Notebook, pencil',
+            moderator: `Spanish pronunciation follows very consistent rules. The biggest superpower is the vowel system. In Spanish, the vowels ALWAYS make the same sound. In English, the letter 'a' can sound different in 'cat,' 'cake,' and 'father.' In Spanish? It is always 'ah.' For this activity we are focusing only on mastering the five Spanish vowels so your accent starts strong from day one!`,
+            steps: [
+              'Write the 5 vowels with their sounds: "A" = ah, "E" = eh, "I" = ee, "O" = oh, "U" = oo. Explain: Unlike English, each vowel has ONE sound. Always.',
+              'Practice each vowel in isolation 5 times with strong mouth shapes, like a vocal warm-up challenge. (Do this in front of a mirror if possible)',
+              'Play Vowel Hunt: the moderator says a vocabulary word, and the learner calls out which vowels they hear in order using today\'s vocabulary. If possible, have them say the Spanish sounds of the vowels (which is also their name in Spanish) instead of the English names of the vowels: A → "Hola", "Gracias", "Nada". E → "Buenos", "Hasta luego", "De nada". I → "Adiós", "Días", "Bienvenido". O → "Hola", "Buenas", "Por favor". U → "Muchas gracias", "Hasta luego", "Buenas noches".',
+              'Challenge round: Write each word you hear, spelling the words the best you can based on the vowels.',
+              'Fun finish: do a fast chant together 3 times saying: A, E, I, O, U! Each round gets a little faster, but the sounds must stay clean.',
+            ]
+          },
+          {
+            title: 'Spanish Mouth Gym',
+            time: '10 min',
+            materials: 'None',
+            moderator: `Spanish uses your mouth differently than English, so let us warm it up like athletes before a game! We are going to train our mouths to make Spanish sounds clearly, and every rule gets a sample word with audio. Your goal is to sound sharper every round.`,
+            steps: [
+              'Practice the tapped or rolled R: start by saying butter, butter, butter fast, then switch to Spanish examples with audio like "gracias," "por favor," and "pero."',
+              'Practice ñ: say canyon slowly to feel the ny sound, then try Spanish examples with audio like "mañana" and "señor."',
+              'Practice silent H: say "hola" and "hasta" without any H sound at the start. Pretend the H is invisible. Use the audio buttons to check yourself.',
+              'Practice clean vowels: say "A-E-I-O-U" slowly, exaggerating mouth shapes. Then use audio-supported examples: "casa," "mesa," "sí," "hola," "mucho."',
+              'Practice the soft D between vowels with examples like "de nada" and "adiós." Keep it lighter and softer than a strong English D.',
+              'Practice the "ue" vowel blend with examples like "buenos" and "luego." Say them slowly, then naturally.',
+              'Tongue-twister challenge: "Buenos días, buenas tardes, buenas noches" — say it 5 times fast without losing clear vowels.',
+              'Fun finish: score each round from 1 to 5 stars and try to beat your own mouth-gym score on the last attempt.',
+            ]
+          },
+          {
+            title: 'Flash Greetings',
+            time: '10 min',
+            materials: 'None',
+            moderator: `We will play a game of Flash. In this game we will act out and say the greetings in Spanish faster and faster until we flash out.`,
+            steps: [
+              'Listen to and repeat the Spanish greetings while acting them out. "Hola" (wave), "Buenos días" (stretch), "Buenas tardes" (hands on hips), "Buenas noches" (sleep).',
+              'Say them through in order while acting them out, increasing in speed.',
+              'Change the order and do it again.',
+              'Variation: Play or say a word and learners have to act it out.',
+                  ]
+          },
+          {
+            title: 'Adios Partner Challenge',
+            time: '8 min',
+            materials: 'None',
+            moderator: `In this game you will need a partner. Your partner will say the name of someone. You will decide which goodbye word or phrase to use based on who they say.`,
+            steps: [
+              'Go through each goodbye vocabulary word and phrase. "Adiós" (bye) "hasta luego" (see you later) "hasta mañana" (see you tomorrow) until each learner feels like they know them.',
+              'Partner 1 says the name of someone like Dad, Santa Claus, etc.',
+              'Partner 2 says a goodbye phrase based on when they are likely to see that person again. Do this 5 times then partners switch.',
+              'Optional: Partner 1 says a greeting, partner 2 says a goodbye. If partner 2 pauses too long, then they have an A (next will be D then I then O then S. Once they spell adios they are out.)',
+              ]
+          },
+          {
+            title: 'Tongue Twisters - Advanced Pronunciation',
+            time: '10 min',
+            materials: 'None',
+            moderator: `TONGUE TWISTERS - Advanced pronunciation! These help your mouth move quickly while keeping Spanish sounds clear. The challenge is to get faster without losing pronunciation accuracy, and today we will use only Lesson 1 vocabulary.`,
+            steps: [
+              '"Hola, buenos días, buenas tardes y buenas noches" — say it 5 times, progressively faster.',
+              '"Adiós, hasta luego, hasta mañana" — repeat it 5 times and get faster each time.',
+              '"Gracias, muchas gracias, de nada" — say it 5 times and keep each phrase clear.',
+              '"Buenos días, buenas tardes, buenas noches" — say it 5 times and focus on the ue sound in buenos and buenas.',
+              'Create your own: combine 2 to 3 Lesson 1 greetings or polite phrases in one line and repeat it quickly.',
+              'Challenge: say each one fast without losing pronunciation clarity.',
+              'Record yourself if possible and listen back to check your accuracy.',
+            ]
+          }
+        ]
+      },
+      day2: {
+        title: 'Day 2: Implementation',
+        subtitle: 'Putting greetings into practice',
+        icon: '✏️',
+        color: '#2563EB',
+        young: [
+          {              
+ title: 'When to Say Goodbye',
+            time: '6 min',
+            materials: 'None',
+            moderator: `We need to understand our 3 goodbye words and phrases. In this game, we will think of people that we will see later, tomorrow, or maybe never.`,
+            steps: [
+              'Ask learners to think of someone that they will see tomorrow. If the person is Andrea, they will say "¡Hasta mañana! Andrea."',
+              'Ask learners who they will say later today or another day. Have them use "hasta luego" then say the person\'s name.',
+              'Ask learners who they may or may not see ever again, such as the cashier at the store. Have them use "¡Adiós! Cashier"',
+              'Repeat as many times as needed. Provide some names for them and have them decide which goodbye they would use for that person.',
+              ]
+          },
+          { 
+title: 'Passageway Secret Code',
+            time: '10 min',
+            materials: 'A passageway',
+            moderator: `In this game, there is a passageway. To pass through the passageway you must say a Spanish greeting. To come back out of the passageway you must say a Spanish goodbye.`,
+            steps: [
+            'Review the greetings and goodbyes words and phrases on the Overview page as needed.',              
+            'Create a passageway using a big cardboard box, chairs with a blanket over them or a doorway.',
+             'The moderator or a designated person is assigned to block the entrance.',
+              'The learner must say a greeting such as "¡Buenos días!" "¡Hola!" and the person blocking the entrance allows them entrance.',
+              'To come back through the passageway, the learner must say a goodbye such as "Hasta luego" "¡Adiós!" "¡Buenas noches!"',
+              'Go through the passageway as many times as you want and try to use each greeting and goodbye phrase at least once.',
+            ]
+          },
+          {
+            title: 'Gracias & De Nada Puppet Show',
+            time: '10 min',
+            materials: 'Socks, stuffed animals, or hand puppets',
+            moderator: `Let's learn two words that go together like peanut butter and jelly: "Gracias" means 'thank you,' and "De nada" means 'you're welcome.' Listen carefully: GRAH-see-ahs. De NAH-dah. Let's use our puppets to practice!`,
+            steps: [
+              'Each child picks a puppet or stuffed animal.',
+              'Moderator demonstrates: One puppet gives something, the other says "¡Gracias!" and the first says "¡De nada!"',
+              'Kids practice passing a small object between puppets, saying the phrases.',
+              'Add "por favor" (please) — now it\'s: "Por favor" → gives item → "¡Gracias!" → "¡De nada!"',
+              'Let kids do it with silly voices for their puppets.',
+              ]
+          },
+          {        
+            title: '¿Cómo se dice? Circle Challenge',
+            time: '10 min',
+            materials: 'A ball or something similar',
+            moderator: `We’re going to play a game to help us learn how to ask how you say something in Spanish. First, we need to learn how to ask the question, How do you say…? Let’s practice asking that in Spanish, "como se dice?" Repeat it together 3 times. To answer the question we say, "se dice" and say the answer.  Let’s sit in a circle and try it!`,
+            steps: [
+              'Sit in a circle and say ‘I’ll ask, how do you say hello, by asking, "como se dice hello?" I toss the ball to someone and they answer my question',
+              'Someone catches the ball and they need to say, "se dice hola"',
+              'Continue the game using all the words and phrases from this lesson',
+'Encourage everyone to use this question from now on when they don’t know how to say something in Spanish',
+   ]
+          },
+          {
+title: 'Greeting the Stuffed Animals',
+            time: '10 min',
+            materials: 'Stuffed animals or dolls, name tags (optional)',
+            moderator: `Let's set up a row of friends! Each stuffed animal is going to get a Spanish greeting. We'll walk down the line, and I'll tell you what time of day it is. You have to give the right greeting!`,
+            steps: [
+              'Line up 4-6 stuffed animals or dolls.',
+              'Review and repeat the greetings and goodbyes words and phrases on the Overview page as needed.',
+              'Walk to the first: ‘It\'s morning!’ → Child says "¡Buenos días!" and waves.',
+              'Next: ‘It\'s afternoon!’ → "¡Buenas tardes!" Then evening → "¡Buenas noches!"',
+              'For the last ones: ‘Time to leave!’ → "¡Adiós!" or "¡Hasta luego!"',
+              'Mix it up: go backwards, skip around, let the child decide what time it is.',
+              'Add "señor" and "señora" — give the animals names: ‘Say good morning to Señor Bear!',
+                     ]
+          },
+        ],
+                older: [
+          {
+            title: 'Circle Compliments',
+            time: '6 min',
+            materials: 'None',
+            moderator: `Everyone will sit in a circle. You will choose someone and greet them in Spanish. Then you will give them a compliment. They say thank you in Spanish and you say You're welcome in Spanish. Then it's their turn to greet and compliment someone else.`,
+            steps: [
+              'Sit in a circle and make sure everyone knows how to say "Gracias" (thank you) or "muchas gracias" (thank you very much) and "de nada." (you\'re welcome)',
+              'The moderator can begin by choosing someone, greeting them in Spanish and giving them a compliment such as, you are a good example to your siblings.',
+              'That person says "gracias". The first person says "de nada".',
+              'That person now greets someone else and gives them a compliment and the game continues this way until everyone has had a turn or two.',
+              ]
+          },
+          {
+            title: 'Greeting Remix',
+            time: '8 min',
+            materials: 'Timer',
+            moderator: `Create your signature greeting routine! Combine at least 4 Spanish phrases with cool moves — like a wave for Hola, a bow for Gracias. Teach it to me when you're ready!`,
+            steps: [
+              'Learners create their own unique greeting routines combining at least 4 vocabulary words or phrases with a gesture, handshake, or movement for each.',
+              'Take turns performing for each other.',
+              'Optional: Learners teach their dance to the group and everyone does the dance together.',
+             ]
+          },
+                    {
+            title: 'Scenario Challenge',
+            time: '12 min',
+            materials: 'Index cards or cut paper (optional)',
+            moderator: `I am going to describe situations, and you have to respond with the right Spanish phrase or phrases. There might be more than one correct answer. Think about time of day, formality, and whether you are arriving or leaving.`,
+            steps: [
+              'Read the scenarios aloud and have learners give a response: 1) You walk into school at 8 AM. → "¡Buenos días!" 2) Your friend gives you a cookie. → "¡Gracias!" or "¡Muchas gracias!" 3) Someone thanks you for holding the door. → "¡De nada!" 4) You are leaving your grandmother\'s house at night. → "¡Buenas noches!" "¡Adiós!" / "¡Hasta mañana!"',
+              'Discuss: Could there be multiple correct answers? Yes — for example, "Hasta luego" and "Adiós" can both work for leaving.',
+              'Have the learners create scenarios for each other or write scenarios down on cards or paper and put them in a hat to draw one on their turn.',
+              'Challenge: Can they respond to 5 scenarios in a row without mistakes?',
+            ]
+          },
+          {
+            title: '¿Cómo se dice? Relay Race',
+  time: '10 min',
+  materials: 'Small slips of paper with the new words and phrases written or printed in English, optional timer',
+  moderator: `Now we are going to practice asking for Spanish words fast and clearly. One person will ask, "¿Cómo se dice...?" which means, How do you say, and another person must answer with "Se dice..." plus the correct Spanish phrase. The goal is to respond quickly, correctly, and confidently.`,
+  steps: [
+    'Place the English prompts in a bowl.',
+    'Divide players into two teams, or play as one group if there are only a few learners.',
+    'The first learner draws a slip and asks another learner: "¿Cómo se dice [English phrase]?"',
+    'The second learner answers in a full sentence: "Se dice [Spanish phrase]."',
+    'If the answer is correct, that team earns a point. If the answer is incomplete, the moderator has the learner repeat the full answer correctly.',
+    'Switch roles each turn so every learner asks and answers multiple times.',
+    'Add a challenge round: after answering, the learner must also use the Spanish phrase in a quick real-life situation.',
+    'Fun finish: do a lightning round with a 1-minute timer and count how many correct question-and-answer exchanges the group can complete.'
+   ]
+          },
+          {
+ title: 'Meaning & Context Mapping',
+            time: '10 min',
+            materials: 'Paper divided into 3 columns',
+            moderator: `Now let us make sure we know what each word means AND when to use it. Make three columns: Greetings, Polite Words, and Goodbyes.`,
+            steps: [
+              'Sort into Greetings = "Hola", "Buenos días", "Buenas tardes", "Buenas noches".',
+              'Sort into Polite Words = "Gracias", "Muchas gracias", "De nada", "Por favor", "Perdón", "Con permiso".',
+              'Sort into Goodbyes = "Adiós", "Hasta luego", "Hasta mañana"',
+              'Ask: Which greeting would you use at 8am? At 3pm? At 9pm?',
+              'Ask: What is the difference between perdón and con permiso? (con permiso is for politely passing by someone, perdón is for saying excuse me or sorry.',
+              'Fun finish: turn it into a speed-sort race and see how quickly the learner can place every phrase in the correct column when you say or play the words.',
+           ]
+}
+        ]
+      },
+      day3: {
+        title: 'Day 3: Listening',
+        subtitle: 'Training your ear for Spanish sounds',
+        icon: '👂',
+        color: '#7C3AED',
+        young: [
+          {
+            title: 'Sound Detective',
+            time: '10 min',
+            materials: 'Audio from Overview tab',
+            moderator: `You're going to be a sound detective today! I'll play a Spanish word, and you have to figure out which greeting it is. Listen very carefully to the sounds!`,
+            steps: [
+              'Play audio of a greeting from the Overview. Don\'t show the text!',
+              'Ask: ‘What did you hear? What does it mean?’',
+              'If they get it right, they earn a ‘detective point.’ Celebrate!',
+              'If they need help, play it again slower. Give hints: ‘This one is for nighttime...’',
+              'Go through 8-10 vocabulary words this way.',
+              'Bonus: Play two words back-to-back. Can they remember both?',
+            ]
+          },
+          {
+      title: 'Greeting Hopscotch',
+            time: '10 min',
+            materials: 'Chalk (outdoor) or tape (indoor) for hopscotch squares • <a href="https://canva.link/s7rwc76ant3u96r" target="_blank" class="text-blue-600 underline font-semibold">Print Cards</a>',
+            moderator: `Let's make a greeting hopscotch! Each square has a Spanish word. When you hear a word you need to jump to that word. Once you land on it, you have to say it out loud!`,
+            steps: [
+              'Create a hopscotch grid with 6-8 squares. In each square, draw, write or place a card with a Spanish greeting.',
+              'Suggested order: "¡Hola!" → "Buenos días" → "Buenas tardes" → "Buenas noches" → "Gracias" → "De nada" → "Adiós" → "¡Hasta luego!"',
+              'Variation: Play a word, the child hops through, saying each phrase as they land.',
+              'Speed round: How fast can they hop through saying every phrase correctly?',
+         ]
+          },
+          {            
+            title: 'Echo Echo Game',
+            time: '8 min',
+            materials: 'None',
+            moderator: `I'm going to be the leader, and you're my echo! But here's the trick — sometimes I'll say or play a greeting correctly, and sometimes I'll say or play it wrong on purpose. Only echo me when I say it RIGHT. If I say it wrong, stay silent and shake your head!`,
+            steps: [
+              'Start easy: Say "¡Hola!" correctly → Kids echo "¡Hola!"',
+              'Say ‘¡HOE-la!’ (pronounce the H) → Kids should stay silent!',
+              'Correct: "gracias" GRAH-see-ahs → Echo! Wrong: "graciáas" Grah-see-AHS (wrong stress) → Silent!',
+              'Correct: "Buenos días" BWEH-nohs DEE-ahs → Echo! Wrong: " Buu enos días" BOO-eh-nos DEE-as → Silent!',
+              'Let kids take turns being the leader who sometimes says it wrong.',
+              'This trains them to hear the correct pronunciation vs. English approximations.',
+            ]
+          },
+          {
+            title: 'Musical Greetings',
+            time: '10 min',
+            materials: 'Music for stopping/starting, chairs or cushions in a circle',
+            moderator: `This is like musical chairs, but Spanish style! Walk around the circle while I play music. When the music stops, you'll hear a Spanish greeting. Everyone find a seat, and then we all repeat it together!`,
+            steps: [
+              'Set up chairs or cushions in a circle (one per person — no elimination).',
+              'Play music. When it stops, everyone sits.',
+              'Moderator plays or says a Spanish greeting. Everyone repeats.',
+              'Moderator asks: ‘What does that mean?’ First to answer correctly gets to start the music next round.',
+              'After 6-8 rounds, remove a chair: when the music stops, the person left standing must say a greeting without help',
+              'End with everyone standing and saying "¡Adiós! ¡Hasta luego!" together.',
+            ]
+          },
+          {
+            title: 'Telephone or Whisper Chain',
+            time: '8 min',
+            materials: 'None (need at least 3 people)',
+            moderator: `Let's play the whisper game in Spanish! I'll whisper a Spanish greeting to the first person. They whisper it to the next person, and so on. The last person says it out loud, and we see if it survived!`,
+            steps: [
+              'Start with easy phrases: "¡Hola!" then "Buenos días".',
+              'Whisper the phrase to the first person. They pass it down.',
+              'Last person says it aloud. Did it match? Celebrate if yes!',
+              'Try harder phrases: "Muchas gracias" or "Hasta mañana".',
+              'If it gets garbled, replay the audio from the Overview and try again.',
+              'This builds careful listening and accurate reproduction of sounds.',
+            ]
+          },
+        ],
+        older: [
+          {
+            title: 'Dictation Challenge',
+            time: '12 min',
+            materials: 'Notebook, audio from Overview tab',
+            moderator: `I'm going to play Spanish phrases, and you need to write down what you hear — in Spanish! This is called dictation, and it's one of the best ways to train your ear and your spelling at the same time.`,
+            steps: [
+              'Play each vocabulary word from the Overview audio. Learner writes what they hear.',
+              'First round: Play each word twice. Learner writes their best guess.',
+              'Check against the vocabulary list. Mark any errors in red.',
+              'Focus on common mistakes: Did they include accent marks? Did they remember silent H? Did they spell ñ correctly?',
+              'Second round: Play 5 words only once each. Can they write them correctly with just one listen?',
+              'Final check: Review all 21 items. Rewrite any that had errors.',
+            ]
+          },
+          {
+            title: 'Dialogue Listening Comprehension',
+            time: '12 min',
+            materials: 'Daily dialogues, notebook',
+            moderator: `Now let's listen to complete conversations! First, just listen without looking at the text. Then answer my questions about what you heard.`,
+            steps: [
+              'Use the daily dialogues or go to the Bonus tab and play each dialogue. Play Dialogue 1. Ask: "How many speakers are there? What time of day is it? What did they say?"',
+              'Reveal the text and check. How much did they catch?',
+              'Play Dialogue 2 the same way. This time, ask them to write down every word they can catch.',
+              'Compare their notes to the actual text. They\'ll likely catch more this time!',
+              'Play Dialogue 3. Challenge: Can they identify ALL the vocabulary words used?',
+              'Final exercise: Listen to all 3 dialogues back-to-back and note which greeting style (formal/casual) each uses.',
+                    ]
+          },
+          {
+            title: 'Vowel Identification Challenge',
+            time: '10 min',
+            materials: 'Notebook',
+            moderator: `Spanish vowels are the foundation of the whole language. I'm going to say words slowly, and you need to write down just the vowels you hear, in order. This trains you to hear the pure Spanish vowel sounds.`,
+            steps: [
+              'Example: "Hola" → Write: O, A. "Buenos" → U, E, O.',
+              'Go through 10 vocabulary words. Learner writes only the vowels they hear.',
+              'Check answers. Common issue: English speakers add extra vowel sounds that aren\'t there.',
+              'Reverse: Moderator gives vowels, learner guesses the word. "A-I-O" → "Adiós!"',
+              'Count the vowels in each word. Which word has the most? (Buenos días = 5 vowels across both words!)',
+              'Discuss: Every syllable in Spanish has exactly one vowel. Count syllables by counting vowels.',
+            ]
+          },
+          {
+            title: 'Pronunciation Detective & Spot the Error',
+            time: '12 min',
+            materials: 'None',
+            moderator: `I am going to say some words WRONG on purpose. Your job is to catch my mistakes like a pronunciation detective. Every time you catch one, you earn a point. If you catch them all, you win the case!`,
+            steps: [
+              'Split into teams if desired.',              
+              'Say Hola with a hard H sound (Hhhola). Learner corrects: H is silent. "Hola"',
+              'Say Buenos días with the wrong stress (Buenos dee-AAHZ). Learner corrects: DEE-ahs, "buenos días".',
+              'Say Gracias with a strong American accent (Grassy-es).Learner corrects: "Gracias." (GRAH-see-ahs).',
+              'Say Hasta mañana without the ñ sound (Ahs-ta manahna). Learner corrects: "hasta mañana" (mah-NYAH-nah.)',
+              'Add a bonus mistake: say Adiós with the accent at the beginning (AAHdios) instead of "Adiós" (ah-dee-OHS) and see if the learner catches it.',
+              'Let the learner take turns being the detective while the moderator tries to catch their intentional mistakes.',
+              'Fun finish: keep score and award a silly detective title like Inspector of Spanish Sounds if they catch 5 or more mistakes.',
+    ]
+          },
+          {
+            title: 'Audio Story Word Hunt',
+            time: '10 min',
+            materials: 'Notebook',
+            moderator: `I am going to read a very short Spanish story. Your job is to listen carefully, count how many words you know, and write down every word or phrase you recognize. Do not worry about catching everything — this is a word hunt, not a perfect translation challenge.`,
+            steps: [
+              'Read this short story aloud two times, naturally and clearly: "Buenos días, Sofía. Sofía dice: Hola. En la tarde, ella dice: buenas tardes. Su mamá le da pan y Sofía dice: muchas gracias. La mamá responde: de nada. En la noche, Sofía dice: buenas noches y adiós."',
+              'After the first listen, ask the learner to count how many familiar words or phrases they heard.',
+              'After the second listen, have the learner write down every greeting or polite phrase they can remember.',
+              'Compare answers together.',
+              'Ask simple follow-up questions: What time of day was in the story? Who said gracias? What did the mamá say back?',
+              'Fun finish: see if the learner can retell the story using the Spanish words they recognized and filling in with English as needed.',
+            ]
+          },
+        ]
+      },
+      day4: {
+        title: 'Day 4: Creation',
+        subtitle: 'Apply language to real life and role-play',
+        icon: '🎭',
+        color: '#059669',
+        young: [
+          {
+           title: 'Excuse Me Obstacle Course',
+            time: '10 min',
+            materials: 'Stuffed animals, chairs, family members used as obstacles',
+            moderator: `Oh no! There are things in our way and we need to get through! When you need to pass by someone, you say "con permiso" (excuse me, may I pass). When you accidentally bump something, you say "perdón" (sorry/excuse me).`,
+            steps: [
+              'Set up a simple course with obstacles.',
+              'Demonstrate walking through, saying con permiso before passing each obstacle.',
+              'Children navigate the obstacle course. At each obstacle they must stop, say con permiso, wait a moment, then pass. If they bump anything, they say perdón.',
+              'Run through 3 times, changing the obstacle course each time.',
+            ]
+          },
+          {
+            title: 'Restaurant Role-Play',
+            time: '12 min',
+            materials: 'Play food or real snacks, table setup',
+            moderator: `Welcome to our Spanish restaurant! I'll be the waiter, and you'll be my customer. But we only speak Spanish! Let's practice what we know. When you come in, greet me. When I bring food, say thank you!`,
+            steps: [
+              'Set up a simple table with plates and play food or real snacks.',
+              'Customer enters: "¡Buenas tardes!" (or appropriate time) Waiter: "¡Buenas tardes! ¡Hola!"',
+              'Waiter brings food. Customer: "Gracias." or "Muchas gracias." Waiter: "De nada."',
+              'Customer leaves: "Adiós. ¡Hasta luego!"',
+              'Switch roles! Let the child be the waiter.',
+              'Add "por favor" when requesting things. Add "señor/señora" for formal practice.',
+              'Encourage adding personality — a grumpy waiter, a very excited customer, etc.',
+            ]
+          },
+          {
+            title: 'Puppet Theater: A Day in Spanish',
+            time: '15 min',
+            materials: 'Puppets, stuffed animals, or sock puppets; blanket for "stage"',
+            moderator: `Let's put on a puppet show! Your puppet is going to have a whole day — waking up in the morning, going out in the afternoon, and going to sleep at night. Every time they meet someone, they have to use the right Spanish greeting!`,
+            steps: [
+              'Set up a blanket over chairs as a puppet stage (optional — they can just hold the puppets).',
+              'Scene 1 — Morning: Puppet wakes up. Meets friend: "¡Buenos días!"',
+              'Scene 2 — Afternoon: Puppet goes to the store. "¡Buenas tardes, señora!" Gets something: "Gracias." "De nada."',
+              'Scene 3 — Evening: Puppet comes home. "¡Buenas noches!" Getting ready for bed: "Hasta mañana. Adiós."',
+              'Encourage kids to ad-lib and add funny moments while keeping the Spanish greetings.',
+              'Perform for other family members or stuffed animal audience!',
+   ]
+          },
+          {
+   title: 'Please & Thank You Store',
+            time: '12 min',
+            materials: 'Small toys, play food, or household items for "shopping"',
+            moderator: `Let's play store! I'm the shopkeeper. When you want something, you have to say "por favor" (please). When I give it to you, say "gracias" or "muchas gracias." And when YOU give something, and someone says gracias, you say "de nada!"`,
+            steps: [
+              'Set up a simple ‘store’ with items on a table.',
+              'Moderator plays shopkeeper. Child approaches: "¡Hola! ¡Buenos días!" (model the greeting first).',
+              'Child points to an item and says: "Por favor." Moderator hands it over.',
+              'Child says: "¡Gracias!" Moderator: "¡De nada!"',
+              'Child leaves: "¡Adiós! ¡Hasta luego!"',
+              'Switch roles — let the child be the shopkeeper while moderator or sibling shops.',            
+]
+          },
+          {
+            title: 'Real-World Greeting Mission',
+            time: '10 min',
+            materials: 'None',
+            moderator: `Here's your real-world mission: Today, you're going to use Spanish greetings with real people! Every time you greet someone — whether it's a family member, a neighbor, or even a pet — use the Spanish version!`,
+            steps: [
+              'Start right now: Greet the moderator in Spanish with the correct time-of-day greeting.',
+              'Make a plan: Who will you see today? A parent, sibling, neighbor, grandparent on the phone?',
+              'Practice what you\'ll say: "When I see grandma, I\'ll say \'¡Hola! ¡Buenas tardes!\'',
+              'Add a thank you goal: Try to say "gracias" instead of ‘thank you’ at least 3 times today.',
+              'Goodbye goal: End every conversation today with "¡Adiós!" or "¡Hasta luego!"',
+              'Report back: Tomorrow, tell us how many times you used Spanish in real life!',
+            ]
+          },
+        ],
+                        older: [          {
+            title: 'Zombies',
+            time: '8 min',
+            materials: 'None',
+            moderator: `You are going to wander around like zombies. If someone is in your path you will say "con permiso" so they can move out of the way. If you hit someone you need to say "Perdón" which means excuse me or sorry."`,
+            steps: [
+              'Repeat the new words first until everyone feels like they know them.',
+              'Everyone wanders and walks around like zombies.',
+              'If someone is in your path say "con permiso".',
+              'If you run into someone say "perdón"',
+              'Continue until everyone has had a chance to say each word a few times.',
+              'Discuss the difference between con permiso and perdón (con permiso is for passing by someone, perdón is like sorry or excuse me.',
+            ]
+          },
+          {
+            title: 'Charades',
+            time: '12 min',
+            materials: 'Small slips of paper, bowl or bag, optional timer',
+            moderator: `Now we are going to review Lesson 1 with a game of charades! Write Spanish words and phrases from this lesson on slips of paper and put them in a bowl. One person picks a slip, reads it silently, and acts it out without speaking. Everyone else tries to guess the Spanish phrase. When someone guesses correctly, they also have to say the English meaning.`,
+            steps: [
+              'Write one Lesson 1 word or phrase on each slip of paper. Suggested phrases: "¡Hola!", "Buenos días", "Buenas tardes", "Buenas noches", "Adiós", "¡Hasta luego!", "Hasta mañana", "Gracias", "Muchas gracias", "De nada", "Por favor", "Con permiso", "Perdón", "Señor", and "Señora".',
+              'Put all slips into a bowl or bag and mix them well.',
+              'One learner picks a slip and has 20 to 30 seconds to act it out silently. No speaking, spelling, or mouthing the answer.',
+              'The other learners call out guesses in Spanish.',
+              'When someone guesses correctly, they must be able to give both the Spanish name and the English meaning before earning the point.',
+              'If nobody guesses it, the moderator reveals the answer, says it aloud clearly, and has everyone repeat it together. It can be placed back into the bowl or bag.',
+              'Add a challenge round: after the correct guess, the learner who got it right must use the phrase in a quick real-life situation or mini-sentence.',
+              'Fun finish: play a lightning round with a 10-second timer and count how many phrases the group can guess correctly.'
+            ]
+          },
+          {
+            title: '¿Cómo se dice? Shoot-Off',
+            time: '12 min',
+            materials: 'None',
+            moderator: `Now we/'ll play a shoot-off game. Two learners stand back-to-back. I will ask a question using like: '¿Cómo se dice good morning?' When I say GO, turn, point your hand gun made with your hands, and say the answer as fast as you can. Whoever says the correct answer first stays for the next challenger."`,
+            steps: [
+              'Choose 2 learners to stand back-to-back.',
+              'Moderator asks a prompt such as: "¿Cómo se dice good morning?"',
+              'On "GO!", both learners turn, point, and answer: "Se dice buenos días!"',
+              'Whoever says the correct answer first wins and stays for the next challenger.',
+              'Rotate challengers so everyone gets multiple turns.',
+              'Have the learners ask the questions.',
+              'Fun finish: run a championship round and crown the fastest speaker in the group.',
+            ]
+          },
+          {
+            title: 'Song & Rhythm',
+            time: '10 min',
+            materials: 'None',
+            moderator: `🎵 SONG & RHYTHM - Create a greeting rap! Use this rhythm like a rap: [Beat: 1-2-3-4, 1-2-3-4]
+
+"Say HOLA when you're feeling fine,
+BUENOS DÍAS every morning time,
+BUENAS TARDES in afternoon,
+BUENAS NOCHES beneath the moon!
+
+When it's time to say goodbye,
+ADIÓS amigos, wave on by!
+HASTA LUEGO, I'll be back,
+Stay cool, keep rhythm on track!"`,
+            steps: [
+              'Add clapping or foot stomping to keep the beat steady.',
+              'Create body movements for each vocabulary word.',
+              'Add instruments or rapping noises.',
+              'Have learners write their own extra verse using greeting words.',
+              'Perform the rap with energy and confidence.',
+              'Fun finish: split into teams and see who can perform the strongest version.',
+            ]
+          },
+          {
+            title: 'Real-Life Application Challenge',
+            time: '10 min',
+            materials: 'None',
+            moderator: `Here is your challenge: use Spanish greetings in your real life today. I have specific missions for you, and you will report back on how they went.`,
+            steps: [
+              'Mission 1: Greet every family member with the correct time-of-day greeting in Spanish for the rest of the day.',
+              'Mission 2: Say "gracias" instead of "thank you" every time today.',
+              'Mission 3: When leaving any room or ending any conversation, use a Spanish goodbye.',
+              'Mission 4: If you encounter any Spanish speaker in real life, on a phone call, or at a store, try using a greeting.',
+              'Mission 5: Call or video-call a relative or friend and greet them in Spanish. Teach them a phrase.',
+              'Reflection: Write in your notebook which missions you completed and how it felt.',
+            ]
+          }
+        ]
+      },
+      day5: {
+        title: 'Day 5: Culture',
+        subtitle: 'Experience Spanish-speaking cultures',
+        icon: '🌎',
+        color: '#DB2777',
+        young: [
+          {
+            title: 'Greeting Around the Spanish World',
+            time: '10 min',
+            materials: 'Map or globe (or printed map)',
+            moderator: `Did you know that Spanish is spoken in over 20 countries? Let's explore the map and see where our new words are used! When I point to a country, let's greet it in Spanish!`,
+            steps: [
+              'Show a map or globe. Point out: Spain, Mexico, Colombia, Argentina, Peru, Cuba, and others.',
+              'For each country, say: "¡Hola, [country name]! ¡Buenos días!" and wave.',
+              'Fun fact for kids: ‘More than 500 million people speak Spanish in the world! That\'s a LOT of people to say ¡Hola! to!’',
+              'Point out: ‘People in Spain might sound a little different from people in Mexico, but they all understand our greetings!’',
+              'Let kids pick their favorite country on the map and give it a special greeting.',
+              'Hang the map somewhere visible — you can add to it as you learn more throughout the curriculum.',
+            ]
+          },
+          {
+            title: 'The Cheek Kiss Greeting',
+            time: '8 min',
+            materials: 'None',
+            moderator: `In many Spanish-speaking countries, when friends and family greet each other, they don't just say hello — they give a little kiss on the cheek! In some countries it's one kiss, in others it's two! Let's learn about this and practice.`,
+            steps: [
+              'Explain: ‘In Spain, people usually do two kisses — one on each cheek! In Latin America, it\'s usually one kiss on the cheek. And men often shake hands or hug instead."',
+              'Practice: approach each other, say "¡Hola! ¡Buenos días!" and do an air kiss on each side (don\'t actually touch — just lean cheek to cheek).',
+              'Discuss: ‘Why do you think people greet this way? It shows warmth and friendship!’',
+              'Compare: ‘In the US, we usually just wave or shake hands. Different cultures show hello in different ways!’',
+              'Practice with stuffed animals for younger children who are shy.',
+            ]
+          },
+          {
+            title: 'Make a Spanish Snack: Pan con Chocolate',
+            time: '15 min',
+            materials: 'Bread, chocolate (hot chocolate or chocolate spread)',
+            moderator: `In Spain, a very popular snack, especially for children, is bread with chocolate — 'pan con chocolate.' And in many Latin American countries, people love 'chocolate caliente' (hot chocolate-we recommend trying Chocolate Abuelita). Let's make our own and practice our Spanish!`,
+            steps: [
+              'Simple version: Toast bread and spread chocolate on it, or dip bread in warm hot chocolate.',
+              'While preparing, practice: "Gracias" when someone passes you something. "Por favor" when asking.',
+              'Greet the food in Spanish: "¡Hola, chocolate! ¡Buenos días!" (kids love this!).',
+              'Fun fact: ‘Hot chocolate was first made by the Aztecs in Mexico, hundreds of years ago! They called it \"xocolatl.\ "’',
+              'When finished: "Gracias" to whoever prepared it. "¡Muchas gracias! ¡De nada!"',
+              'Say "adiós" to your plate when you\'re done!',
+            ]
+          },
+          {
+            title: 'Spanish Greeting Song',
+            time: '10 min',
+            materials: 'None (optional: instruments or pots/spoons for rhythm)',
+            moderator: `Music is a huge part of Spanish-speaking cultures! Let's create our own greeting song using all the words we learned. We'll clap a rhythm and sing our greetings!`,
+            steps: [
+              'Create a simple chant to a clapping rhythm: "¡Hola, hola, buenos días! (clap clap) ¡Hola, hola, buenos días! (clap clap) Gracias, de nada, por favor (clap clap clap) ¡Adiós, hasta luego, adiós! (clap clap clap)"',
+              'Repeat several times until everyone knows it.',
+              'Add verses for afternoon and evening: swap "buenos días" for "buenas tardes" and "buenas noches."',
+              'Add instruments or household items for rhythm: spoons, pots, shakers.',
+              'Perform it standing up with movements: wave for hola, bow for gracias, wave goodbye for adiós.',
+              'This song will become your lesson review song — sing it anytime to practice!',
+            ]
+          },
+          {
+            title: 'Saying Hello in the Spanish-Speaking World (Video/Story)',
+            time: '10 min',
+            materials: 'Optional: A picture book about Spanish culture or just storytelling',
+            moderator: `Let me tell you a story about a day in a Spanish-speaking country. Imagine you woke up in a colorful house in Mexico...`,
+            steps: [
+              'Tell a story (or read one if available): ‘You wake up in the morning. The sun is shining. You walk to the kitchen and say \"¡Buenos días, mamá!\"...’',
+              'Continue the story through a whole day: morning market ("¡Buenos días, señor!"), afternoon at a friend\'s house ("¡Buenas tardes!"), buying an ice cream ("Gracias. De nada."), going home at night ("¡Buenas noches! Hasta mañana.").',
+              'Include cultural details: colorful buildings, mariachi music in the distance, the smell of tortillas. (Look up together any of these traditions that are new to you)',
+              'Let kids contribute: ‘What happens next?’ They must include a Spanish greeting in their addition.',
+              'End the story with: ‘And as the stars came out, you said to the moon: \"¡Buenas noches!\ " And the moon said back... \"¡Hasta mañana!\ "’',
+              'Discuss: What was your favorite part of the day in Mexico?',
+            ]
+          },
+        ],
+        older: [
+          {
+            title: 'The Spanish-Speaking World Research',
+            time: '15 min',
+            materials: 'Map, notebook',
+            moderator: `Spanish is the official language of 20 countries and is spoken by over 500 million people worldwide. Let's explore where Spanish lives in the world and learn some fascinating facts about these diverse cultures.`,
+            steps: [
+              'List all 20 Spanish-speaking countries. Challenge the learner to name as many as they can first.',
+              'Listen to their names in Spanish and try to identify what country it is in English. Full list: "España" (Spain), "México" (Mexico), "Guatemala", "Honduras", "El Salvador", "Nicaragua", "Costa Rica", "Panamá" (Panama), "Colombia", "Venezuela", "Ecuador", "Perú" (Peru), "Bolivia", "Chile", "Argentina", "Uruguay", "Paraguay", "Cuba", "República Dominicana" (Dominican Republic), "Puerto Rico" (U.S. territory), "Guinea Ecuatorial" (Equatorial Guinea Africa!).',
+              'Mark each on a map. Notice: Spanish is spoken across 4 continents (Europe, North America, South America, Africa).',
+              'Fun facts to discuss: The country with the most Spanish speakers is Mexico (130M). The US has more Spanish speakers than Spain!',
+              'Discuss: Spanish developed from Latin, brought by Roman soldiers to Spain over 2,000 years ago. It spread to the Americas starting in 1492.',
+              'Write 3 facts that surprised you in your notebook.',
+            ]
+          },
+          {
+  title: 'Greeting Lotería (Spanish BINGO)',
+  time: '12–15 min',
+  materials: 'Paper for cards, small markers (cereal, buttons, etc.)',
+  moderator: 'In Mexico, a traditional game called La Lotería is played. It is similar to BINGO, but instead of numbers, players use pictures and words. A caller announces each card, and players cover the matching image on their board. Today, learners will play a version using Spanish greetings.',
+  steps: [
+    'Create simple 3x3 cards with greeting words or picture clues, such as **sun = Buenos días**, **moon = Buenas noches**, **wave = Hola**, **waving goodbye = Adiós**, and **smile or heart = Gracias**.',
+    'The moderator acts as the **caller** (similar to La Lotería) and says or plays a Spanish greeting.',
+    'Players listen carefully, find the matching word or image on their card, and cover it.',
+    'For additional support, the moderator may briefly show a visual clue when introducing a new word.',
+    'The first player to get 3 in a row wins. Instead of saying BINGO, the player says **¡Lotería!** and reads the Spanish words from their winning row.',
+    'Variation: the moderator says the **English meaning**, and players identify the **Spanish phrase** on their card.',
+    'Extension: allow learners to take turns being the caller and practice pronunciation with confidence.'
+            ]
+          },
+          {            
+title: 'Greeting Customs Comparison',
+            time: '12 min',
+            materials: 'Notebook',
+            moderator: `Greeting customs vary across Spanish-speaking countries and are quite different from US customs. Let's compare and understand why these differences exist.`,
+            steps: [
+              'Spain: Two cheek kisses (right then left), even among people who just met. "Buenos días" used until about 2 PM.',
+              'Mexico: One cheek kiss between women and mixed pairs; handshake between men. Very formal with "señor/señora" — even with shopkeepers.',
+              'Argentina: One cheek kiss — for everyone, including between men! "Buenas" is a common short greeting any time of day.',
+              'Colombia: Very formal greetings. Long pleasantries before getting to business. "Con mucho gusto" (with great pleasure) is a common response to "gracias."',
+              'Create a comparison chart in your notebook: Country | Greeting Style | Formality Level | Unique Feature.',
+              'Discuss: Why do you think different cultures greet differently? What does a greeting tell you about a culture\'s values?',
+            ]
+          },
+          {
+            title: 'Cook a Cultural Recipe: Agua Fresca',
+            time: '15 min',
+            materials: 'Lime, watermelon, cucumber or any fruit, water, sugar, pitcher, blender',
+            moderator: `In Mexico and Central America, "aguas frescas" (fresh waters) are popular drinks made from fruit, water, and a little sugar. Let's make one together while practicing our Spanish! We'll use 'por favor' and 'gracias' throughout.`,
+            steps: [
+              'Simple recipe — "Agua de Limón" (Limeade): Juice of 4-5 limes + 4 cups water + sugar to taste. Or "Agua de Sandía": Blend watermelon chunks with water, strain and add sugar as needed. "Agua de pepino": Blend chopped cucumber (peeled or not) with water and add sugar as needed and lime if desired',
+              'Practice vocabulary while cooking: ask for ingredients using "por favor," say "gracias" when receiving them.',
+              'Cultural context: In Mexico, you\'ll find "aguas frescas" at every market and restaurant. Common flavors: "jamaica" (hibiscus), "horchata" (rice drink), "tamarindo" (tamarind).',
+              'While the drink sets, discuss: Mealtimes in Spanish-speaking countries are often later than in the US. Lunch (2-3 PM) is the big meal. Dinner might be at 9-10 PM!',
+              'Serve the drink. Practice: "¿Agua fresca, por favor?" "Sí, gracias." "¡De nada!"',
+              'Toast together: "¡Salud!" (Cheers! — literally "health!")',
+            ]
+          },
+          {
+            title: 'Cultural Reflection Journal',
+            time: '10 min',
+            materials: 'Notebook, colored pencils (optional)',
+            moderator: `"Let's end our first lesson by reflecting on everything we've learned — not just the language, but the cultures behind it. Open your notebook to a fresh page."`,
+            steps: [
+              'Title the page: "Lección 1 — Reflexión" (Lesson 1 — Reflection).',
+              'Write responses to these prompts: 1) What surprised me most about Spanish-speaking cultures this week? 2) Which greeting is my favorite and why? 3) How is saying hello in Spanish-speaking countries different from my own experience?',
+              'Draw or sketch something cultural you learned about: the map, the cheek-kiss greeting, aguas frescas, the naming system.',
+              'Set a goal: Next week, I will use Spanish greetings in my real life by... (be specific).',
+              'Rate your confidence: How comfortable are you with Lesson 1 vocabulary? 1-5 stars.',
+              'Write one thing you\'re excited to learn next in Spanish.',
+            ]
+          },
+        ]
+      }
+    };
+
+    // ========== STATE ==========
+    let currentTab = 'overview';
+    let currentAgeGroup = 'young'; // 'young' or 'older'
+
+    // ========== AUDIO BUTTON HELPER ==========
+    function createAudioBtn(text, size = 'md', gender = 'neutral') {
+      const sizeClasses = size === 'sm' ? 'w-7 h-7 text-xs' : 'w-9 h-9 text-sm';
+      const iconSize = size === 'sm' ? 'text-[11px]' : 'text-sm';
+      return `<button class="audio-btn ${sizeClasses} rounded-full flex items-center justify-center flex-shrink-0" style="background: var(--accent); color: #fff;" onclick="playAudio(this, '${text.replace(/'/g, "\'")}', '${gender}')" aria-label="Play audio"><span class="${iconSize}" aria-hidden="true">🔊</span></button>`;
+    }
+
+    window.playAudio = function(btn, text, gender = 'neutral') {
+      AudioEngine.playClick();
+      if (btn && btn.classList) btn.classList.add('playing');
+      AudioEngine.speak(text, { gender }).then(() => {
+        if (btn && btn.classList) btn.classList.remove('playing');
+      });
+    };
+
+    // ========== RENDER FUNCTIONS ==========
+    function renderOverview() {
+      const c = document.getElementById('content-area');
+      c.innerHTML = `
+        <div class="p-4 max-w-3xl mx-auto space-y-5 pb-8">
+          <!-- Welcome Card -->
+          <div class="card-enter rounded-2xl p-5 shadow-lg" style="background: linear-gradient(135deg, #0C4A6E, #0EA5E9); color: #fff; animation-delay: 0s;">
+            <h2 class="font-black text-xl mb-1">Welcome to Lesson 1!</h2>
+            <p class="text-orange-100 text-sm font-medium serif">Learn Spanish greetings, courtesy phrases, and the sounds that make them work. By the end of this week, your will be greeting each other in Spanish!</p>
+            
+          </div>
+
+          <!-- Pronunciation Notes -->
+          <div class="card-enter rounded-2xl p-5 shadow-md" style="background: var(--surface); animation-delay: 0.2s;">
+            <h3 class="font-black text-lg flex items-center gap-2 mb-4"><span>🔤</span> Pronunciation Guide</h3>
+            <p class="text-sm mb-4" style="color: #5D4E37;">Spanish pronunciation is very consistent — each letter almost always makes the same sound. Master these and you can read any Spanish word!</p>
+            <div class="overview-card-grid">
+              ${PRONUNCIATION_NOTES.map(n => `
+                <div class="sound-card">
+                  <div class="sound-icon">${n.icon}</div>
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-black text-lg" style="color: var(--accent);">${n.sound}</span>
+                        <span class="text-xs font-semibold px-2 py-1 rounded-full" style="background: rgba(14,165,233,0.08); color: var(--accent2);">Sound focus</span>
+                      </div>
+                      <p class="text-sm mt-2" style="color: #5D4E37;">${n.example}</p>
+                      <p class="text-xs mt-3" style="color: #8B7355;">Used in: ${n.spanish}</p>
+                    </div>
+                    ${createAudioBtn(n.spanish, 'sm')}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Vocabulary -->
+          <div class="card-enter rounded-2xl p-5 shadow-md" style="background: var(--surface); animation-delay: 0.3s;">
+            <h3 class="font-black text-lg flex items-center gap-2 mb-4"><span>📚</span> Lesson 1 Vocabulary</h3>
+            <p class="text-sm mb-4" style="color: #5D4E37;"> Practice along!</p>
+            <div class="overview-card-grid">
+              ${VOCAB.map((v, i) => `
+                <div class="vocab-card">
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="flex-1 min-w-0">
+                      <div class="font-black text-base" style="color: var(--accent);">${v.es}</div>
+                      <div class="text-sm mt-1" style="color: #5D4E37;">${v.en}</div>
+                      <div class="phonetic-pill">${v.phonetic}</div>
+                    </div>
+                    ${createAudioBtn(v.es, 'sm')}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Week At a Glance -->
+          <div class="card-enter rounded-2xl p-5 shadow-md" style="background: var(--surface); animation-delay: 0.4s;">
+            <div class="flex items-start justify-between gap-3 mb-4 flex-wrap">
+              <h3 class="font-black text-lg flex items-center gap-2"><span>📅</span> Your Week at a Glance</h3>
+            </div>
+            <div class="space-y-2">
+              ${Object.entries(DAYS).map(([key, day]) => `
+                <button class="w-full text-left p-3 rounded-xl flex items-center gap-3 activity-card" style="background: rgba(0,0,0,0.02);" onclick="switchToTab('${key}')">
+                  <span class="text-xl">${day.icon}</span>
+                  <div class="flex-1">
+                    <div class="font-bold text-sm">${day.title}</div>
+                    <div class="text-xs" style="color: #8B7355;">${day.subtitle}</div>
+                  </div>
+                  
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+
+    function renderDayDialogue(dayKey) {
+      const pack = DAY_DIALOGUES[dayKey] && DAY_DIALOGUES[dayKey][currentAgeGroup];
+      if (!pack) return '';
+
+      const dialogues = Array.isArray(pack) ? pack : [pack];
+
+      return dialogues.map((dialogue, dIdx) => {
+        const linesHtml = dialogue.lines.map((line, idx) => `
+          <div class="flex items-start gap-2 p-2.5 rounded-xl" style="background: ${idx % 2 === 0 ? 'rgba(234,88,12,0.04)' : 'rgba(180,83,9,0.04)'};">
+            ${createAudioBtn(line.text, 'sm', line.gender || 'neutral')}
+            <div class="flex-1 min-w-0">
+              <span class="text-xs font-bold" style="color: var(--accent);">${line.speaker}:</span>
+              <div class="font-bold text-sm mt-0.5">${line.text}</div>
+              <div class="text-xs italic mt-0.5" style="color: #8B7355;">${line.en}</div>
+            </div>
+          </div>
+        `).join('');
+
+        return `
+          <div class="card-enter rounded-2xl shadow-md overflow-hidden" style="background: var(--surface); animation-delay: ${0.45 + (dIdx * 0.05)}s;">
+            <div class="p-4">
+              <div class="flex items-start justify-between gap-3 flex-wrap mb-3">
+                <div>
+                  <h3 class="font-black text-base flex items-center gap-2"><span>💬</span> ${dialogue.title}</h3>
+                  <p class="text-xs mt-1" style="color: #8B7355;">${dialogue.note}</p>
+                </div>
+                <button class="audio-btn flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold" style="background: var(--accent); color: #fff;" onclick="playDayDialogue('${dayKey}', ${dIdx}, this)">
+                   Play Dialogue
+                </button>
+              </div>
+              <div class="space-y-2">${linesHtml}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.playDayDialogue = async function(dayKey, dialogueIndex, btn) {
+      const pack = DAY_DIALOGUES[dayKey] && DAY_DIALOGUES[dayKey][currentAgeGroup];
+      const dialogues = Array.isArray(pack) ? pack : [pack];
+      const dialogue = dialogues[dialogueIndex] || dialogues[0];
+      if (!dialogue) return;
+      btn.classList.add('playing');
+      for (const line of dialogue.lines) {
+        await AudioEngine.speak(line.text, { gender: line.gender || 'neutral' });
+        await new Promise(r => setTimeout(r, 600));
+      }
+      btn.classList.remove('playing');
+      AudioEngine.playSuccess();
+    };
+
+    function renderDay(dayKey) {
+      const day = DAYS[dayKey];
+      if (!day) return;
+      const activities = currentAgeGroup === 'young' ? day.young : day.older;
+      const c = document.getElementById('content-area');
+
+      const activitiesHtml = activities.map((act, i) => {
+        const stepsHtml = act.steps.map((step, si) => `
+          <div class="flex gap-2.5 items-start text-sm">
+            <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5" style="background: rgba(0,0,0,0.06); color: #8B7355;">${si + 1}</span>
+            <p class="flex-1" style="color: #5D4E37;">${formatStep(step)}</p>
+          </div>
+        `).join('');
+
+        return `
+          <div class="card-enter rounded-2xl shadow-md overflow-hidden activity-card" style="background: var(--surface); animation-delay: ${(i + 1) * 0.08}s;">
+            <button class="w-full text-left p-4 flex items-start justify-between gap-3 activity-toggle" onclick="toggleActivityDropdown(this)" aria-expanded="false">
+              <div class="flex items-start gap-3 flex-1 min-w-0">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center font-black text-sm flex-shrink-0" style="background: ${day.color}; color: #fff;">${i + 1}</div>
+                <div class="flex-1">
+                  <h4 class="font-black text-base">${act.title}</h4>
+                  <div class="flex gap-3 mt-1 flex-wrap">
+                    <span class="text-xs font-semibold" style="color: #8B7355;">⏱️ ${act.time}</span>
+                    <span class="text-xs font-semibold" style="color: #8B7355;">📦 ${act.materials}</span>
+                  </div>
+                </div>
+              </div>
+              
+            </button>
+
+            <div class="dropdown-content px-4">
+              <div class="moderator-script rounded-lg text-sm" style="background: rgba(234,88,12,0.06); color: var(--text);">
+                <p class="serif italic">${formatModerator(act.moderator)}</p>
+              </div>
+              <div class="mt-4 space-y-2 pb-4">
+                ${stepsHtml}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      c.innerHTML = `
+        <div class="p-4 max-w-3xl mx-auto space-y-5 pb-8">
+          <div class="card-enter rounded-2xl p-5 shadow-lg" style="background: ${day.color}; color: #fff;">
+            <div class="flex items-center gap-3">
+              <span class="text-3xl">${day.icon}</span>
+              <div>
+                <h2 class="font-black text-xl">${day.title}</h2>
+                <p class="text-sm opacity-90">${day.subtitle}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center gap-2 py-1">
+            <button class="age-tab ${currentAgeGroup === 'young' ? 'active-age' : ''}" onclick="setAgeGroup('young', '${dayKey}')">🧒 Ages 2-8</button>
+            <button class="age-tab ${currentAgeGroup === 'older' ? 'active-age' : ''}" onclick="setAgeGroup('older', '${dayKey}')">📖 Ages 9+</button>
+          </div>
+
+          
+
+          <div class="space-y-4">${activitiesHtml}</div>
+
+
+          ${renderDayDialogue(dayKey)}
+<div class="flex justify-center mt-4">
+<button class="feature-btn px-4 py-2 rounded-full text-xs font-bold" style="background: var(--accent); color: #fff;" onclick="printCurrentDay(\'${dayKey}\')">Print / Save Day</button>
+</div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    function renderOverview() {
+      const c = document.getElementById('content-area');
+
+      const vowelCards = [
+        { letter: 'A', sound: 'sounds like "ah"', hint: 'as in "father"', audio: 'a' },
+        { letter: 'E', sound: 'sounds like "eh"', hint: 'as in "bed"', audio: 'e' },
+        { letter: 'I', sound: 'sounds like "ee"', hint: 'as in "see"', audio: 'i' },
+        { letter: 'O', sound: 'sounds like "oh"', hint: 'as in "go"', audio: 'o' },
+        { letter: 'U', sound: 'sounds like "oo"', hint: 'as in "moon"', audio: 'u' },
+      ];
+
+      const keySounds = [
+        { label: 'H', note: 'is always silent in Spanish.', example: 'Hola = "oh-lah"', audio: 'Hola' },
+        { label: 'LL', note: 'sounds like the English "y" in "yes."', example: 'Llamo = "yah-moh"', audio: 'Llamo' },
+        { label: 'Ñ', note: 'sounds like "ny" in "canyon."', example: 'Mañana = "mah-nyah-nah"', audio: 'Mañana' },
+        { label: 'B/V', note: 'sound very similar in Spanish — both are soft, between English B and V.', example: '', audio: '' },
+        { label: 'R', note: 'is a light tap in words like "gracias" and "por favor."', example: '', audio: 'gracias, por favor' },
+        { label: 'RR', note: 'is a rolled/trilled R. Don\'t worry — practice makes perfect!', example: '', audio: '' },
+        { label: 'Accent marks', note: 'help show where the stress goes, like in "Adiós" and "Perdón".', example: '', audio: 'Adiós, Perdón' },
+        { label: 'Spain note', note: 'In most of Spain, z and soft c sound like "th" in "think." In most of Latin America, they sound like "s".', example: 'gracias, Barcelona, cena', audio: 'gracias, Barcelona, cena' },
+        { label: 'Spanish vowels', note: 'stay pure and short — they do not slide like English vowels often do.', example: '', audio: '' }
+      ];
+
+      c.innerHTML = `
+        <div class="p-4 max-w-4xl mx-auto space-y-5 pb-8">
+
+          <div class="card-enter rounded-2xl p-5 shadow-md" style="background: var(--surface); animation-delay: 0.08s;">
+            <h3 class="font-black text-lg mb-1" style="color: var(--text);">Pronunciation Notes</h3>
+            <p class="text-sm mb-4" style="color:#8B7355;">Key sounds you need to know. Come back here whenever you need a sound reminder.</p>
+            <h4 class="font-extrabold text-sm mb-3" style="color: var(--text);">The 5 Spanish Vowels – the vowels always make the same sounds!</h4>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-5">
+              ${vowelCards.map(v => `
+                <div class="vocab-card rounded-xl p-4 text-center border" style="background: #fef7f0; border-color: #fad4a8;" onclick="playAudio(this, '${v.audio}')">
+                  <div class="text-3xl font-black" style="color: var(--accent);">${v.letter}</div>
+                  <div class="text-xs font-bold mt-1" style="color: #8b3c13;">${v.sound}</div>
+                  <div class="text-[10px] mt-1" style="color: #ae4a0e;">${v.hint}</div>
+                  <div class="mt-2 flex justify-center">${createAudioBtn(v.audio, 'sm')}</div>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="rounded-xl p-4" style="background:#f4f7f4; border: 1px solid #c7d7c7;">
+              <h4 class="font-extrabold text-sm mb-2" style="color: var(--text);">Key Sounds</h4>
+              <div class="space-y-2">
+                ${keySounds.map(item => `
+                  <div class="flex items-start gap-2 text-sm" style="color:#5D4E37;">
+                    <span style="color: var(--accent);">•</span>
+                    <div class="flex-1">
+                      <strong>${item.label}</strong> ${item.note}
+                      ${item.example ? `<span> <em>${item.example}</em></span>` : ''}
+                    </div>
+                    ${item.audio ? createAudioBtn(item.audio, 'sm') : ''}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <div class="card-enter rounded-2xl p-5 shadow-md" style="background: var(--surface); animation-delay: 0.12s;">
+            <div class="flex items-start justify-between gap-3 mb-3 flex-wrap">
+              <div>
+                <h3 class="font-black text-lg mb-1" style="color: var(--text);">New Words & Phrases</h3>
+                <p class="text-sm" style="color:#8B7355;"></p>
+              </div>
+              
+            </div>
+            <p class="text-sm mb-4" style="color:#8B7355;">Blue = core words • Purple = extra words</p>
+            <div class="space-y-4">
+              ${[
+                { title: 'Greetings', words: ['¡Hola!','Buenos días','Buenas tardes','Buenas noches'] },
+                { title: 'Goodbyes', words: ['Adiós','¡Hasta luego!','Hasta mañana'] },
+                { title: 'Polite Expressions', words: ['Gracias','Muchas gracias','De nada','Por favor','Con permiso','Perdón'] },
+                { title: 'Question & Answer Phrases', words: ['¿Cómo se dice?','Se dice'] },
+                { title: 'Titles, Welcomes, and Core Words', words: ['Señor','Señora','Bienvenido','Bienvenida','Sí','No'] }
+              ].map(group => `
+                <div class="rounded-xl p-4" style="background:#f4f7f4; border: 1px solid #c7d7c7;">
+                  <div class="font-extrabold text-sm mb-3" style="color: var(--text);">${group.title}</div>
+                  <div class="overview-card-grid">
+                    ${VOCAB.filter(v => group.words.includes(v.es)).map(v => `
+                      <div class="vocab-card ${v.core ? 'core-word-card' : 'extra-word-card'}">
+                        <div class="flex items-start justify-between gap-3">
+                          <div class="flex-1 min-w-0">
+<div class="font-black text-base" style="color: var(--accent);">${v.es}</div>
+                            <div class="text-sm mt-1" style="color: #5D4E37;">${v.en}</div>
+                            <div class="phonetic-pill">${v.phonetic}</div>
+                            <div class="text-xs mt-2 px-2 py-1 rounded-lg inline-block" style="background:#f4f7f4; color:#517a52;">
+                              ${
+                                v.es === '¡Hola!' ? 'The H is silent.' :
+                                v.es === 'Buenos días' ? 'Used in the morning.' :
+                                v.es === 'Buenas tardes' ? 'Used from noon to sunset.' :
+                                v.es === 'Buenas noches' ? 'Used at night as hello or goodbye.' :
+                                v.es === 'Adiós' ? 'A general goodbye.' :
+                                v.es === '¡Hasta luego!' ? 'A common casual goodbye.' :
+                                v.es === 'Hasta mañana' ? 'Use when you will see someone tomorrow.' :
+                                v.es === 'Gracias' ? 'Your basic thank you.' :
+                                v.es === 'Muchas gracias' ? 'A stronger thank you.' :
+                                v.es === 'De nada' ? 'Your response to thank you.' :
+                                v.es === 'Por favor' ? 'Use when asking politely.' :
+                                v.es === '¿Cómo se dice?' ? 'Great enrichment phrase, but optional in Week 1.' :
+                                v.es === 'Se dice' ? 'Use this to answer with the Spanish word or phrase.' :
+                                v.es === 'Bienvenido' ? 'Useful, but optional in Week 1.' :
+                                v.es === 'Bienvenida' ? 'Useful, but optional in Week 1.' :
+                                v.es === 'Con permiso' ? 'Use this when politely passing by someone.' :
+                                v.es === 'Sí' ? 'Has an accent mark on the i.' :
+                                v.es === 'No' ? 'Easy one — same meaning as English.' :
+                                v.es === 'Perdón' ? 'Use for excuse me or sorry.' :
+                                v.es === 'Señor' ? 'Polite title — good exposure, not essential for Week 1 mastery.' :
+                                'Polite title — good exposure, not essential for Week 1 mastery.'
+                              }
+                            </div>
+                          </div>
+                          ${createAudioBtn(v.es, 'sm')}
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="card-enter rounded-2xl p-5 shadow-md" style="background: var(--surface); animation-delay: 0.16s;">
+            <h3 class="font-black text-lg mb-1" style="color: var(--text);">Grammar Notes</h3>
+            <p class="text-sm mb-4" style="color:#8B7355;">For your reference.</p>
+            <div class="space-y-3">
+              ${GRAMMAR_NOTES.map(g => `
+                <div class="rounded-xl p-4" style="background:#f4f7f4; border: 1px solid #c7d7c7;">
+                  <div class="font-extrabold text-sm mb-1" style="color: var(--text);">${g.title}</div>
+                  <div class="text-sm" style="color:#5D4E37;">${g.note}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="flex justify-center mt-4">
+            
+          </div>
+
+          <div class="card-enter rounded-2xl p-5 shadow-md text-center" style="background: linear-gradient(135deg, rgba(14,165,233,0.08), rgba(255,255,255,1)); animation-delay: 0.20s;">
+            <div class="space-y-3">
+              <p class="text-sm" style="color:#5D4E37;"></p>
+              <div class="inline-flex items-center justify-center gap-2 flex-wrap">
+                <p class="font-bold m-0" style="color:#517a52;">¡Tú sí puedes! — You can do it!</p>
+                ${createAudioBtn('¡Tú sí puedes!', 'sm')}
+              </div>
+<div class="flex justify-center mt-4">
+  <button class="feature-btn px-4 py-2 rounded-full text-xs font-bold"
+    style="background: var(--accent); color: #fff;"
+    onclick="printOverview()">
+    Print / Save Overview
+  </button>
+</div>
+
+            </div>
+          </div>
+
+          <div class="flex justify-center mt-4">
+            
+          </div>
+
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+
+const BONUS_FLASHCARDS = VOCAB.map(v => ({
+      front: v.es,
+      back: v.en,
+      phonetic: v.phonetic || '',
+      cat: (
+        ['¡Hola!', 'Buenos días', 'Buenas tardes', 'Buenas noches', 'Adiós', '¡Hasta luego!', 'Hasta mañana'].includes(v.es) ? 'Greetings & Goodbyes' :
+        ['Gracias', 'Muchas gracias', 'De nada', 'Por favor', 'Con permiso', 'Perdón'].includes(v.es) ? 'Courtesy Phrases' :
+        ['Señor', 'Señora', 'Bienvenido', 'Bienvenida'].includes(v.es) ? 'Polite Titles & Welcomes' :
+        ['¿Cómo se dice?', 'Se dice'].includes(v.es) ? 'Help Phrases' :
+        'Core Words'
+      )
+    }));
+
+    const BONUS_QW_VOCAB = {
+      lesson1: VOCAB.map(v => ({ es: v.es, en: v.en })),
+      review: [
+        { es: 'La H es silenciosa.', en: 'The H is silent.' },
+        { es: 'La ñ suena como ny.', en: 'The ñ sounds like ny.' },
+        { es: 'Buenos días', en: 'Good morning' },
+        { es: 'Con permiso', en: 'Excuse me (to pass by)' },
+        { es: '¿Cómo se dice?', en: 'How do you say?' },
+        { es: 'Bienvenida', en: 'Welcome' }
+      ]
+    };
+
+    let bonusFlashcards = [...BONUS_FLASHCARDS];
+    let bonusFlashIndex = 0;
+    let bonusFlashFlipped = false;
+    let bonusFlashCategory = 'All';
+    let bonusFlashcardFrontMode = 'spanish'; // 'spanish' or 'english'
+
+    let bonusQuizQuestions = [];
+    let bonusQuizIndex = 0;
+    let bonusQuizScore = 0;
+    let bonusQuizAnswered = false;
+    let bonusWorksheetData = [];
+    let bonusToolsTab = 'quiz';
+
+    function escBonusHtml(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function normalizeBonus(s) {
+      return String(s || '').toLowerCase().replace(/[¿¡?!.,\/()…]/g, '').trim();
+    }
+
+    function shuffleBonus(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function pickBonus(arr, n) {
+      return shuffleBonus(arr).slice(0, n);
+    }
+
+    function getFlashcardCategories() {
+      return ['All', ...new Set(BONUS_FLASHCARDS.map(c => c.cat))];
+    }
+
+    function filterFlashcards(cat) {
+      bonusFlashCategory = cat;
+      bonusFlashcards = cat === 'All' ? [...BONUS_FLASHCARDS] : BONUS_FLASHCARDS.filter(c => c.cat === cat);
+      bonusFlashIndex = 0;
+      bonusFlashFlipped = false;
+      renderBonus();
+    }
+
+    function setBonusFlashcardFrontMode(mode) {
+      bonusFlashcardFrontMode = mode === 'english' ? 'english' : 'spanish';
+      bonusFlashFlipped = false;
+      renderBonus();
+    }
+
+    function flipBonusFlashcard() {
+      bonusFlashFlipped = !bonusFlashFlipped;
+      const inner = document.getElementById('bonus-flashcard-inner');
+      if (inner) inner.classList.toggle('flipped', bonusFlashFlipped);
+    }
+
+    function nextBonusFlashcard() {
+      if (!bonusFlashcards.length) return;
+      bonusFlashIndex = (bonusFlashIndex + 1) % bonusFlashcards.length;
+      bonusFlashFlipped = false;
+      renderBonus();
+    }
+
+    function prevBonusFlashcard() {
+      if (!bonusFlashcards.length) return;
+      bonusFlashIndex = (bonusFlashIndex - 1 + bonusFlashcards.length) % bonusFlashcards.length;
+      bonusFlashFlipped = false;
+      renderBonus();
+    }
+
+    function shuffleBonusFlashcards() {
+      bonusFlashcards = shuffleBonus(bonusFlashcards);
+      bonusFlashIndex = 0;
+      bonusFlashFlipped = false;
+      renderBonus();
+    }
+
+    function playCurrentBonusFlashcard() {
+      const card = bonusFlashcards[bonusFlashIndex];
+      if (!card) return;
+      AudioEngine.playClick();
+      AudioEngine.speak(card.front);
+    }
+
+    window.handleBonusFlashcardKey = function(event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        flipBonusFlashcard();
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        nextBonusFlashcard();
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        prevBonusFlashcard();
+      }
+    };
+
+    function buildBonusQuiz() {
+      const pool = shuffleBonus([...BONUS_QW_VOCAB.lesson1, ...BONUS_QW_VOCAB.review]);
+      const qTypes = ['mc_es_en', 'mc_en_es', 'fill_es', 'fill_en'];
+      bonusQuizQuestions = [];
+      bonusQuizIndex = 0;
+      bonusQuizScore = 0;
+      bonusQuizAnswered = false;
+
+      for (let i = 0; i < 8; i++) {
+        const item = pool[i % pool.length];
+        const type = qTypes[Math.floor(Math.random() * qTypes.length)];
+        const q = { item, type };
+        if (type.startsWith('mc')) {
+          const dir = type === 'mc_es_en';
+          q.prompt = dir ? item.es : item.en;
+          q.answer = dir ? item.en : item.es;
+          q.badge = dir ? 'Spanish → English' : 'English → Spanish';
+          const distractors = shuffleBonus(pool.filter(v => v.es !== item.es)).slice(0, 3).map(v => dir ? v.en : v.es);
+          q.options = shuffleBonus([q.answer, ...distractors]);
+        } else {
+          const dir = type === 'fill_es';
+          q.prompt = dir ? `Translate to English: "${item.es}"` : `Translate to Spanish: "${item.en}"`;
+          q.answer = dir ? item.en : item.es;
+          q.badge = 'Fill in the Blank';
+        }
+        bonusQuizQuestions.push(q);
+      }
+    }
+
+    function renderBonusQuizSection() {
+      if (!bonusQuizQuestions.length) buildBonusQuiz();
+      const q = bonusQuizQuestions[bonusQuizIndex];
+      const progressPct = ((bonusQuizIndex + 1) / bonusQuizQuestions.length) * 100;
+      return `
+        <div class="space-y-4">
+          <div class="flex justify-between items-center text-sm">
+            <button onclick="resetBonusQuiz()" class="px-3 py-1 rounded-lg text-xs font-semibold" style="background: rgba(14,165,233,0.1); color: var(--accent2); border:1px solid rgba(14,165,233,0.18);">New Quiz</button>
+            <div style="color: var(--accent2);">Question ${bonusQuizIndex + 1} / ${bonusQuizQuestions.length}</div>
+            <div class="font-semibold" style="color: var(--accent);">Score: ${bonusQuizScore}</div>
+          </div>
+          <div class="w-full rounded-full h-2" style="background: rgba(14,165,233,0.12);">
+            
+          </div>
+          <div class="rounded-2xl p-5 shadow-sm" style="background: rgba(14,165,233,0.05); border: 1px solid rgba(14,165,233,0.16);">
+            <div class="inline-block text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full mb-4" style="background: rgba(14,165,233,0.12); color: var(--accent2);">${escBonusHtml(q.badge || '')}</div>
+            <p class="serif text-xl mb-5" style="color: var(--text);">${escBonusHtml(q.prompt)}</p>
+            ${q.type.startsWith('mc') ? `
+              <div id="bonus-mc-options" class="grid gap-3">
+                ${q.options.map((opt, i) => `
+                  <button onclick="checkBonusMC(this, ${i})" class="text-left px-4 py-3 rounded-xl text-sm font-medium transition-all option-btn" style="background: var(--surface); border: 1px solid rgba(14,165,233,0.18); color: #5D4E37;">
+                    ${escBonusHtml(opt)}
+                  </button>
+                `).join('')}
+              </div>
+            ` : `
+              <div>
+                <input id="bonus-fill-input" type="text" autocomplete="off" class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all" style="background: var(--surface); border: 2px solid rgba(14,165,233,0.18); color: var(--text);" placeholder="Type your answer…" onkeydown="if(event.key==='Enter')checkBonusFill()">
+                <button onclick="checkBonusFill()" class="mt-3 w-full py-3 rounded-xl font-semibold text-sm transition-all option-btn" style="background: var(--accent); color: #fff;">Check Answer</button>
+              </div>
+            `}
+            
+          </div>
+          <button id="bonus-next-btn" onclick="nextBonusQuestion()" class="hidden w-full py-3 rounded-xl font-semibold text-sm transition-all option-btn" style="background: rgba(14,165,233,0.1); color: var(--accent2); border: 1px solid rgba(14,165,233,0.18);">Next Question</button>
+        </div>
+      `;
+    }
+
+    function showBonusQuizFeedback(correct, answer) {
+      const fb = document.getElementById('bonus-quiz-feedback');
+      if (!fb) return;
+      fb.classList.remove('hidden');
+      fb.style.background = correct ? 'rgba(5,150,105,0.12)' : 'rgba(220,38,38,0.10)';
+      fb.style.color = correct ? '#065f46' : '#991b1b';
+      fb.innerHTML = correct
+        ? `<span>✓ Correct!</span>`
+        : `<span>✗ Incorrect.</span> The answer is: <strong>${escBonusHtml(answer)}</strong>`;
+      const nextBtn = document.getElementById('bonus-next-btn');
+      if (nextBtn) nextBtn.classList.remove('hidden');
+    }
+
+    function checkBonusMC(btn, idx) {
+      if (bonusQuizAnswered) return;
+      bonusQuizAnswered = true;
+      const q = bonusQuizQuestions[bonusQuizIndex];
+      const correct = q.options[idx] === q.answer;
+      if (correct) bonusQuizScore++;
+      const btns = document.getElementById('bonus-mc-options').querySelectorAll('button');
+      btns.forEach(b => {
+        if (normalizeBonus(b.textContent) === normalizeBonus(q.answer)) {
+          b.style.background = 'rgba(5,150,105,0.12)';
+          b.style.borderColor = '#059669';
+          b.style.color = '#065f46';
+        }
+        b.disabled = true;
+      });
+      if (!correct) {
+        btn.style.background = 'rgba(220,38,38,0.10)';
+        btn.style.borderColor = '#dc2626';
+        btn.style.color = '#991b1b';
+      }
+      showBonusQuizFeedback(correct, q.answer);
+    }
+
+    function checkBonusFill() {
+      if (bonusQuizAnswered) return;
+      bonusQuizAnswered = true;
+      const q = bonusQuizQuestions[bonusQuizIndex];
+      const input = document.getElementById('bonus-fill-input');
+      const val = input ? input.value : '';
+      const correct = normalizeBonus(val) === normalizeBonus(q.answer);
+      if (correct) bonusQuizScore++;
+      if (input) {
+        input.readOnly = true;
+        input.style.background = correct ? 'rgba(5,150,105,0.12)' : 'rgba(220,38,38,0.10)';
+        input.style.borderColor = correct ? '#059669' : '#dc2626';
+        input.style.color = correct ? '#065f46' : '#991b1b';
+      }
+      showBonusQuizFeedback(correct, q.answer);
+    }
+
+    function nextBonusQuestion() {
+      bonusQuizIndex++;
+      bonusQuizAnswered = false;
+      if (bonusQuizIndex >= bonusQuizQuestions.length) {
+        bonusQuizIndex = bonusQuizQuestions.length - 1;
+        const container = document.getElementById('bonus-tools-body');
+        if (container) {
+          const pct = Math.round((bonusQuizScore / bonusQuizQuestions.length) * 100);
+          const msg = pct >= 90 ? '¡Excelente! You nailed it!' : pct >= 70 ? '¡Muy bien! Great job!' : pct >= 50 ? 'Not bad! Keep practicing.' : 'Keep studying — you will get there!';
+          container.innerHTML = `
+            <div class="text-center py-6">
+              <div class="text-5xl mb-3">🎉</div>
+              <h3 class="serif text-2xl mb-2" style="color: var(--text);">Quiz Complete!</h3>
+              <p class="text-lg mb-1" style="color: var(--accent2);">${bonusQuizScore} / ${bonusQuizQuestions.length} (${pct}%)</p>
+              <p class="text-sm mb-5" style="color: #8B7355;">${msg}</p>
+              <button onclick="resetBonusQuiz()" class="px-5 py-2 rounded-xl font-semibold text-sm" style="background: var(--accent); color: #fff;">New Quiz</button>
+            </div>
+          `;
+        }
+        return;
+      }
+      renderBonusToolsBody();
+    }
+
+    function resetBonusQuiz() {
+      buildBonusQuiz();
+      bonusToolsTab = 'quiz';
+      renderBonusToolsBody();
+    }
+
+    function generateBonusWorksheet() {
+      bonusWorksheetData = [];
+      const lessonPool = BONUS_QW_VOCAB.lesson1;
+      const reviewPool = BONUS_QW_VOCAB.review;
+
+      const matchItems = pickBonus(lessonPool, 5);
+      const shuffledEn = shuffleBonus(matchItems.map(v => v.en));
+      bonusWorksheetData.push({ type: 'match', items: matchItems, shuffledEn });
+
+      const fills = [
+        { text: '______ días.', answer: 'Buenos', hint: 'Good' },
+        { text: 'Muchas ______.', answer: 'gracias', hint: 'thanks' },
+        { text: 'De ______.', answer: 'nada', hint: 'nothing' },
+        { text: 'Con ______.', answer: 'permiso', hint: 'permission' },
+        { text: '¿Cómo se ______?', answer: 'dice', hint: 'say' }
+      ];
+      const fillItems = pickBonus(fills, 4);
+      bonusWorksheetData.push({ type: 'fill', items: fillItems });
+
+      const translateItems = pickBonus([...lessonPool, ...reviewPool], 4);
+      bonusWorksheetData.push({ type: 'translate', items: translateItems });
+    }
+
+    function renderBonusWorksheetSection() {
+      if (!bonusWorksheetData.length) generateBonusWorksheet();
+      const matchData = bonusWorksheetData.find(w => w.type === 'match');
+      const fillData = bonusWorksheetData.find(w => w.type === 'fill');
+      const transData = bonusWorksheetData.find(w => w.type === 'translate');
+
+      return `
+        <div class="space-y-5">
+          <div class="flex justify-between items-center">
+            <p class="text-sm" style="color:#8B7355;">Complete the worksheet below.</p>
+            <button onclick="regenerateBonusWorksheet()" class="px-4 py-2 rounded-lg text-xs font-semibold" style="background: rgba(14,165,233,0.10); color: var(--accent2); border: 1px solid rgba(14,165,233,0.18);">Regenerate Worksheet</button>
+          </div>
+
+          <div class="rounded-2xl p-5" style="background: rgba(14,165,233,0.05); border: 1px solid rgba(14,165,233,0.16);">
+            <h3 class="serif text-lg mb-2" style="color: var(--text);">Part 1: Matching</h3>
+            <p class="text-sm mb-4" style="color:#8B7355;">Match each Spanish phrase with its English translation.</p>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                ${matchData.items.map((v, i) => `<div><span class="font-semibold" style="color: var(--accent);">${i + 1}.</span> <span style="color:#5D4E37;">${escBonusHtml(v.es)}</span></div>`).join('')}
+              </div>
+              <div class="space-y-2">
+                ${matchData.shuffledEn.map((en, i) => `<div><span class="font-semibold" style="color: var(--accent2);">${String.fromCharCode(65 + i)}.</span> <span style="color:#5D4E37;">${escBonusHtml(en)}</span></div>`).join('')}
+              </div>
+            </div>
+            <div class="mt-4 space-y-2">
+              ${matchData.items.map((v, i) => `<div class="flex items-center gap-2"><label for="bonus-match-${i}" class="text-sm font-medium" style="color: var(--accent2);">${i + 1} →</label><input id="bonus-match-${i}" data-bonus-match="${i}" type="text" maxlength="1" class="w-12 px-3 py-1 rounded-lg text-center uppercase text-sm" style="background: var(--surface); border:1px solid rgba(14,165,233,0.18); color: var(--text);" placeholder="?"></div>`).join('')}
+            </div>
+          </div>
+
+          <div class="rounded-2xl p-5" style="background: rgba(14,165,233,0.05); border: 1px solid rgba(14,165,233,0.16);">
+            <h3 class="serif text-lg mb-2" style="color: var(--text);">Part 2: Fill in the Blank</h3>
+            <p class="text-sm mb-4" style="color:#8B7355;">Complete each sentence with the correct word.</p>
+            <div class="space-y-4">
+              ${fillData.items.map((s, i) => `
+                <div>
+                  <p class="text-base mb-1" style="color:#5D4E37;">${i + 1}. ${escBonusHtml(s.text)}</p>
+                  <p class="text-xs mb-1" style="color:#8B7355;">Hint: ${escBonusHtml(s.hint)}</p>
+                  <input id="bonus-fill-${i}" data-bonus-fill="${i}" type="text" class="w-full max-w-xs px-3 py-2 rounded-lg text-sm" style="background: var(--surface); border:1px solid rgba(14,165,233,0.18); color: var(--text);" placeholder="Your answer…">
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="rounded-2xl p-5" style="background: rgba(14,165,233,0.05); border: 1px solid rgba(14,165,233,0.16);">
+            <h3 class="serif text-lg mb-2" style="color: var(--text);">Part 3: Translate to Spanish</h3>
+            <p class="text-sm mb-4" style="color:#8B7355;">Write the Spanish translation for each phrase.</p>
+            <div class="space-y-4">
+              ${transData.items.map((v, i) => `
+                <div>
+                  <p class="text-base mb-1" style="color:#5D4E37;">${i + 1}. ${escBonusHtml(v.en)}</p>
+                  <input id="bonus-trans-${i}" data-bonus-trans="${i}" type="text" class="w-full max-w-sm px-3 py-2 rounded-lg text-sm" style="background: var(--surface); border:1px solid rgba(14,165,233,0.18); color: var(--text);" placeholder="En español…">
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="text-center">
+            <button onclick="checkBonusWorksheet()" class="px-5 py-3 rounded-xl font-semibold text-sm" style="background: var(--accent); color:#fff;">Check Answers</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function checkBonusWorksheet() {
+      let total = 0, correct = 0;
+
+      const matchData = bonusWorksheetData.find(w => w.type === 'match');
+      matchData.items.forEach((v, i) => {
+        total++;
+        const input = document.querySelector(`[data-bonus-match="${i}"]`);
+        const letter = (input.value || '').toUpperCase().trim();
+        const correctIdx = matchData.shuffledEn.indexOf(v.en);
+        const correctLetter = String.fromCharCode(65 + correctIdx);
+        if (letter === correctLetter) {
+          correct++;
+          input.style.background = 'rgba(5,150,105,0.12)';
+          input.style.borderColor = '#059669';
+          input.style.color = '#065f46';
+        } else {
+          input.style.background = 'rgba(220,38,38,0.10)';
+          input.style.borderColor = '#dc2626';
+          input.style.color = '#991b1b';
+          input.title = `Correct: ${correctLetter}`;
+        }
+      });
+
+      const fillData = bonusWorksheetData.find(w => w.type === 'fill');
+      fillData.items.forEach((s, i) => {
+        total++;
+        const input = document.querySelector(`[data-bonus-fill="${i}"]`);
+        if (normalizeBonus(input.value) === normalizeBonus(s.answer)) {
+          correct++;
+          input.style.background = 'rgba(5,150,105,0.12)';
+          input.style.borderColor = '#059669';
+          input.style.color = '#065f46';
+        } else {
+          input.style.background = 'rgba(220,38,38,0.10)';
+          input.style.borderColor = '#dc2626';
+          input.style.color = '#991b1b';
+          input.title = `Correct: ${s.answer}`;
+        }
+      });
+
+      const transData = bonusWorksheetData.find(w => w.type === 'translate');
+      transData.items.forEach((v, i) => {
+        total++;
+        const input = document.querySelector(`[data-bonus-trans="${i}"]`);
+        if (normalizeBonus(input.value) === normalizeBonus(v.es)) {
+          correct++;
+          input.style.background = 'rgba(5,150,105,0.12)';
+          input.style.borderColor = '#059669';
+          input.style.color = '#065f46';
+        } else {
+          input.style.background = 'rgba(220,38,38,0.10)';
+          input.style.borderColor = '#dc2626';
+          input.style.color = '#991b1b';
+          input.title = `Correct: ${v.es}`;
+        }
+      });
+
+      const existing = document.getElementById('bonus-ws-result');
+      if (existing) existing.remove();
+      const pct = Math.round((correct / total) * 100);
+      const result = document.createElement('div');
+      result.id = 'bonus-ws-result';
+      result.className = 'mt-4 text-center p-4 rounded-xl';
+      result.style.background = pct >= 70 ? 'rgba(5,150,105,0.12)' : 'rgba(220,38,38,0.10)';
+      result.innerHTML = `<p class="serif text-lg" style="color: var(--text);">${correct} / ${total} correct (${pct}%)</p><p class="text-sm mt-1" style="color:#8B7355;">Hover over red fields to see the correct answer.</p>`;
+      document.getElementById('bonus-tools-body').appendChild(result);
+    }
+
+    function regenerateBonusWorksheet() {
+      generateBonusWorksheet();
+      bonusToolsTab = 'worksheet';
+      renderBonusToolsBody();
+    }
+
+    function renderBonusVocabSection() {
+      const sections = [
+        { title: 'Lesson 1 — Greetings & Sounds', items: BONUS_QW_VOCAB.lesson1 },
+        { title: 'Extra Review Notes', items: BONUS_QW_VOCAB.review }
+      ];
+      return sections.map(sec => `
+        <div class="rounded-2xl p-5" style="background: rgba(14,165,233,0.05); border: 1px solid rgba(14,165,233,0.16);">
+          <h3 class="serif text-lg mb-3" style="color: var(--text);">${escBonusHtml(sec.title)}</h3>
+          <div class="grid gap-2">
+            ${sec.items.map(v => `
+              <div class="flex justify-between items-start gap-4 py-2" style="border-bottom: 1px dashed rgba(14,165,233,0.18);">
+                <span class="font-medium" style="color:#5D4E37;">${escBonusHtml(v.es)}</span>
+                <span class="text-right text-sm" style="color:#8B7355;">${escBonusHtml(v.en)}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderBonusToolsBody() {
+      const body = document.getElementById('bonus-tools-body');
+      if (!body) return;
+      if (bonusToolsTab === 'worksheet') body.innerHTML = renderBonusWorksheetSection();
+      else if (bonusToolsTab === 'vocab') body.innerHTML = renderBonusVocabSection();
+      else body.innerHTML = renderBonusQuizSection();
+    }
+
+    function switchBonusToolsTab(tab) {
+      bonusToolsTab = tab;
+      renderBonus();
+    }
+
+    function renderBonus() {
+      const c = document.getElementById('content-area');
+      const categories = getFlashcardCategories();
+      const currentCard = bonusFlashcards[bonusFlashIndex] || BONUS_FLASHCARDS[0] || { front: '', back: '', cat: '' };
+      const bonusEnglishFirst = bonusFlashcardFrontMode === 'english';
+      const bonusFrontText = bonusEnglishFirst ? currentCard.back : currentCard.front;
+      const bonusBackText = bonusEnglishFirst ? currentCard.front : currentCard.back;
+      const bonusFrontLabel = bonusEnglishFirst ? 'English' : 'Spanish';
+      const bonusBackLabel = bonusEnglishFirst ? 'Spanish' : 'English';
+
+      if (!bonusQuizQuestions.length) buildBonusQuiz();
+      if (!bonusWorksheetData.length) generateBonusWorksheet();
+
+      c.innerHTML = `
+        <div class="p-4 max-w-4xl mx-auto space-y-5 pb-8">
+          <div class="card-enter rounded-2xl p-5 shadow-lg" style="background: linear-gradient(135deg, #B45309, #F59E0B); color: #fff;">
+            <div class="flex items-start justify-between gap-3 flex-wrap">
+              <div>
+                <h2 class="font-black text-xl flex items-center gap-2"><span>⭐</span> Bonus: Study Tools & Extra Dialogues</h2>
+                <p class="text-sm mt-1 opacity-90">Use flashcards, quiz yourself, complete worksheets, read/listen to bonus dialogues.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-enter rounded-2xl shadow-md overflow-hidden" style="background: var(--surface); animation-delay: 0.05s;">
+            <div class="p-5">
+              <div class="flex items-start justify-between gap-3 flex-wrap mb-4">
+                <div>
+                  <h3 class="font-black text-lg" style="color: var(--text);">Digital Flashcards</h3>
+                  <p class="text-sm" style="color:#8B7355;">Tap the card to flip it. Audio appears only on the Spanish side.</p>
+                </div>
+                <button class="feature-btn px-4 py-2 rounded-full text-xs font-bold" style="background: var(--accent); color: #fff;" onclick="printFlashcards()">Print Flashcards</button>
+              </div>
+
+              <div class="flex flex-wrap gap-2 mb-3">
+                <button onclick="setBonusFlashcardFrontMode('spanish')" class="px-3 py-1.5 rounded-full text-xs font-semibold transition-all" style="background: ${bonusFlashcardFrontMode === 'spanish' ? 'var(--accent)' : 'rgba(14,165,233,0.08)'}; color: ${bonusFlashcardFrontMode === 'spanish' ? '#fff' : 'var(--accent2)'};">Spanish First</button>
+                <button onclick="setBonusFlashcardFrontMode('english')" class="px-3 py-1.5 rounded-full text-xs font-semibold transition-all" style="background: ${bonusFlashcardFrontMode === 'english' ? 'var(--accent)' : 'rgba(14,165,233,0.08)'}; color: ${bonusFlashcardFrontMode === 'english' ? '#fff' : 'var(--accent2)'};">English First</button>
+              </div>
+
+              <div class="flex flex-wrap gap-2 mb-4">
+                ${categories.map(cat => `
+                  <button onclick="filterFlashcards(${JSON.stringify(cat)})" class="px-3 py-1.5 rounded-full text-xs font-semibold transition-all" style="background: ${cat === bonusFlashCategory ? 'var(--accent)' : 'rgba(14,165,233,0.08)'}; color: ${cat === bonusFlashCategory ? '#fff' : 'var(--accent2)'};">${escBonusHtml(cat)}</button>
+                `).join('')}
+              </div>
+
+              <div class="mx-auto" style="width: 100%; max-width: 430px; height: 280px; perspective: 1000px;">
+                <div id="bonus-flashcard-inner" class="flashcard-inner ${bonusFlashFlipped ? 'flipped' : ''}" onclick="flipBonusFlashcard()" onkeydown="handleBonusFlashcardKey(event)" role="button" tabindex="0" aria-label="Flip flashcard">
+                  <div class="flashcard-front rounded-2xl shadow-sm" style="background: linear-gradient(135deg, #0C4A6E, #0369A1, #0EA5E9); color: #e0f2fe;">
+                    <span class="text-xs font-bold uppercase tracking-widest mb-2 opacity-80">${escBonusHtml(currentCard.cat)} • ${bonusFrontLabel}</span>
+                    <span class="serif text-2xl md:text-3xl text-center leading-snug">${escBonusHtml(bonusFrontText)}</span>
+                    ${bonusEnglishFirst ? '' : `<span class="mt-2 text-sm opacity-75">${escBonusHtml(currentCard.phonetic || '')}</span><button class="mt-4 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105" style="background: rgba(255,255,255,0.18); color: #fff; border: 1px solid rgba(255,255,255,0.25);" onclick="event.stopPropagation(); playCurrentBonusFlashcard()">🔊 Listen</button>`}
+                    <span class="mt-3 text-sm opacity-70">tap to reveal</span>
+                  </div>
+                  <div class="flashcard-back rounded-2xl shadow-sm" style="background: #e0f2fe; color: #082f49;">
+                    <span class="text-xs font-bold uppercase tracking-widest mb-2" style="color: var(--accent2);">${escBonusHtml(currentCard.cat)} • ${bonusBackLabel}</span>
+                    <span class="serif text-2xl md:text-3xl text-center leading-snug">${escBonusHtml(bonusBackText)}</span>
+                    ${bonusEnglishFirst ? `<span class="mt-2 text-sm" style="color:#0369A1;">${escBonusHtml(currentCard.phonetic || '')}</span><button class="mt-4 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105" style="background: var(--accent); color: #fff;" onclick="event.stopPropagation(); playCurrentBonusFlashcard()">🔊 Listen</button>` : ''}
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-center gap-4 mt-5 flex-wrap">
+                <button onclick="prevBonusFlashcard()" class="p-3 rounded-full transition-all hover:scale-110" style="background: rgba(14,165,233,0.08); color: var(--accent2);">◀</button>
+                <span class="font-semibold text-sm tabular-nums" style="color: var(--accent2);">${bonusFlashIndex + 1} / ${bonusFlashcards.length}</span>
+                <button onclick="nextBonusFlashcard()" class="p-3 rounded-full transition-all hover:scale-110" style="background: rgba(14,165,233,0.08); color: var(--accent2);">▶</button>
+                <button onclick="shuffleBonusFlashcards()" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all hover:scale-105" style="background: rgba(14,165,233,0.08); color: var(--accent2);">Shuffle</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-enter rounded-2xl shadow-md overflow-hidden" style="background: var(--surface); animation-delay: 0.1s;">
+            <div class="p-5">
+              <div class="mb-4">
+                <h3 class="font-black text-lg" style="color: var(--text);">Quiz & Worksheets</h3>
+                <p class="text-sm" style="color:#8B7355;">Try the quiz, complete the worksheet, or review the vocabulary list.</p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 mb-4" role="tablist">
+                <button onclick="switchBonusToolsTab('quiz')" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all" style="background: ${bonusToolsTab === 'quiz' ? 'var(--accent)' : 'rgba(14,165,233,0.08)'}; color: ${bonusToolsTab === 'quiz' ? '#fff' : 'var(--accent2)'};">Quiz</button>
+                <button onclick="switchBonusToolsTab('worksheet')" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all" style="background: ${bonusToolsTab === 'worksheet' ? 'var(--accent)' : 'rgba(14,165,233,0.08)'}; color: ${bonusToolsTab === 'worksheet' ? '#fff' : 'var(--accent2)'};">Worksheet</button>
+                <button onclick="switchBonusToolsTab('vocab')" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all" style="background: ${bonusToolsTab === 'vocab' ? 'var(--accent)' : 'rgba(14,165,233,0.08)'}; color: ${bonusToolsTab === 'vocab' ? '#fff' : 'var(--accent2)'};">Vocabulary</button>
+                <button onclick="printQuiz()" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all" style="background: rgba(14,165,233,0.08); color: var(--accent2); border: 1px solid rgba(14,165,233,0.18);">Print Quiz</button>
+                <button onclick="printWorksheet()" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all" style="background: rgba(14,165,233,0.08); color: var(--accent2); border: 1px solid rgba(14,165,233,0.18);">Print Worksheet</button>
+              </div>
+
+              <div id="bonus-tools-body"></div>
+
+            </div>
+          </div>
+
+          ${DIALOGUES.map((d, di) => `
+            <div class="card-enter rounded-2xl shadow-md overflow-hidden dialogue-card" style="background: var(--surface); animation-delay: ${(di + 1) * 0.1}s;">
+              <div class="p-4">
+                <h3 class="font-black text-base mb-1">${d.title}</h3>
+                <button class="audio-btn mb-3 flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold" style="background: var(--accent); color: #fff;" onclick="playDialogue(${di}, this)">▶ Play Full Dialogue</button>
+                <div class="space-y-2">
+                  ${d.lines.map((line, li) => `
+                    <div class="flex items-start gap-2 p-2.5 rounded-xl" style="background: ${li % 2 === 0 ? 'rgba(234,88,12,0.04)' : 'rgba(180,83,9,0.04)'};">
+                      ${createAudioBtn(line.text, 'sm', line.gender || 'neutral')}
+                      <div class="flex-1 min-w-0">
+                        <span class="text-xs font-bold" style="color: var(--accent);">${line.speaker}:</span>
+                        <div class="font-bold text-sm mt-0.5">${line.text}</div>
+                        <div class="text-xs italic mt-0.5" style="color: #8B7355;">${line.en}</div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+
+          <div class="flex justify-center mt-4">
+            <button class="feature-btn px-4 py-2 rounded-full text-xs font-bold" style="background: var(--accent); color: #fff;" onclick="printDialogues()">Print / Save Dialogues</button>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+      renderBonusToolsBody();
+    }
+
+
+    window.playDialogue = async function(index, btn) {
+      const d = DIALOGUES[index];
+      btn.classList.add('playing');
+      for (const line of d.lines) {
+        await AudioEngine.speak(line.text, { gender: line.gender || 'neutral' });
+        await new Promise(r => setTimeout(r, 600));
+      }
+      btn.classList.remove('playing');
+      AudioEngine.playSuccess();
+    };
+
+    function addAudioToBoldSpanish(html) {
+      return html.replace(/<strong>(.*?)<\/strong>/g, (match, phrase) => {
+        const clean = String(phrase).trim();
+        if (!clean) return match;
+        return `<span class="inline-flex items-center gap-2 flex-wrap"><strong>${clean}</strong>${createAudioBtn(clean, 'sm')}</span>`;
+      });
+    }
+
+    function addAudioToQuotedSpanish(html) {
+      return html.replace(/<em class="serif" style="color: var\(--accent2\);">"(.*?)"<\/em>/g, (match, phrase) => {
+        const clean = String(phrase).trim();
+        if (!clean) return match;
+        return `<span class="inline-flex items-center gap-2 flex-wrap"><em class="serif" style="color: var(--accent2);">"${clean}"</em>${createAudioBtn(clean, 'sm')}</span>`;
+      });
+    }
+
+    function formatStep(text) {
+      let html = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/"(.*?)"/g, '<em class="serif" style="color: var(--accent2);">"$1"</em>');
+      html = addAudioToBoldSpanish(html);
+      html = addAudioToQuotedSpanish(html);
+      return html;
+    }
+
+    function formatModerator(text) {
+      let html = String(text || '')
+        .replace(/"(.*?)"/g, '<em class="serif" style="color: var(--accent2);">"$1"</em>');
+      html = addAudioToQuotedSpanish(html);
+      return html;
+    }
+
+
+    window.toggleActivityDropdown = function(btn) {
+      const content = btn.nextElementSibling;
+      const arrow = btn.querySelector('.dd-arrow');
+      if (!content) return;
+      const isOpen = content.classList.contains('open');
+      content.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(!isOpen));
+      if (arrow) arrow.style.transform = !isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+      AudioEngine.playClick();
+    };
+
+    // ========== NAV ==========
+    window.switchToTab = function(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      const activeTab = document.querySelector(`[data-tab="${tab}"]`);
+      if (activeTab) activeTab.classList.add('active');
+      renderContent();
+      document.getElementById('content-area').scrollTop = 0;
+      AudioEngine.playClick();
+    };
+
+    window.switchTab = window.switchToTab;
+
+    window.setAgeGroup = function(group, dayKey) {
+      currentAgeGroup = group;
+      renderDay(dayKey);
+    };
+
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.addEventListener('click', () => switchToTab(tab.dataset.tab));
+    });
+
+    function renderContent() {
+      if (currentTab === 'overview') renderOverview();
+      else if (currentTab === 'bonus') renderBonus();
+      else renderDay(currentTab);
+    }
+
+
+    // ========== FLASHCARDS + PRINT HELPERS ==========
+    let flashcards = [];
+    let currentFlashcardIndex = 0;
+    let flashcardFlipped = false;
+    let shuffleMode = false;
+    let flashcardFrontMode = 'spanish'; // 'spanish' or 'english'
+
+    function getFlashcardData() {
+      return VOCAB.map(v => ({
+        spanish: v.es,
+        english: v.en,
+        pronunciation: v.phonetic,
+        usage: 'Lesson 1 vocabulary'
+      }));
+    }
+
+    function renderFlashcardsSection() {
+      const mount = document.getElementById('flashcards-section');
+      if (!mount) return;
+      flashcards = getFlashcardData();
+      currentFlashcardIndex = 0;
+      flashcardFlipped = false;
+
+      mount.innerHTML = `
+        <div class="card-enter rounded-2xl p-5 shadow-md" style="background: var(--surface); animation-delay: 0.25s;">
+          <div class="mb-4">
+            <div class="flex flex-col items-center justify-center text-center gap-3 flex-wrap">
+              <div>
+                <h3 class="font-black text-base flex items-center gap-2"><span>🃏</span> Digital Flashcards</h3>
+                <p class="text-xs mt-1" style="color:#8B7355;">Tap card to flip • Use arrows to navigate • Tap audio to hear the Spanish.</p>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <button id="fc-mode-spanish-btn" class="feature-btn px-4 py-2 rounded-full text-xs font-bold" style="background: var(--accent); color: white;" onclick="setFlashcardFrontMode('spanish')">
+                  Spanish First
+                </button>
+                <button id="fc-mode-english-btn" class="feature-btn px-4 py-2 rounded-full text-xs font-bold" style="background: rgba(14,165,233,0.08); color: var(--accent); border: 1px solid rgba(14,165,233,0.16);" onclick="setFlashcardFrontMode('english')">
+                  English First
+                </button>
+                <button id="fc-shuffle-btn" class="feature-btn px-4 py-2 rounded-full text-xs font-bold" style="background: rgba(14,165,233,0.08); color: var(--accent); border: 1px solid rgba(14,165,233,0.16);" onclick="toggleFlashcardShuffle()">
+                  Shuffle Mode
+                </button>
+                <button id="fc-print-btn" class="feature-btn px-4 py-2 rounded-full text-xs font-bold" style="background: var(--accent); color: white;" onclick="printFlashcards()">
+                  Printable Flashcards
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="flashcard-deck-wrap">
+            <div id="fc-counter" class="text-xs font-semibold tracking-widest" style="color: var(--accent);">1 / ${flashcards.length}</div>
+
+            <div class="fc-card-container" id="fc-card-container">
+              <div class="fc-card-inner" id="fc-card-inner">
+                <div class="fc-card-face flex flex-col items-center justify-center p-5 cursor-pointer" id="fc-card-front" onclick="flipFlashcard()" style="background: linear-gradient(145deg, #16213e, #0f3460);">
+                  <div class="relative z-10 flex flex-col items-center ">
+                    <span id="fc-front-word" class="text-2xl font-bold mb-4 serif" style="color: #ffffff; line-height:1.2;">¡Hola!</span>
+                    <span id="fc-front-pronunciation" class="text-sm mb-4" style="color: #7a9ec2; font-style: italic;">/OH-lah/</span>
+                    <button id="fc-audio-front" class="audio-btn w-12 h-12 rounded-full flex items-center justify-center border-2" style="border-color: #e8d5b7; background: rgba(232,213,183,0.1);" aria-label="Play pronunciation">
+                      
+                    </button>
+                    <span class="mt-4 text-xs tracking-wide" style="color: #b8c3d4;">tap to flip</span>
+                  </div>
+                </div>
+
+                <div class="fc-card-face fc-card-back flex flex-col items-center justify-center p-5 cursor-pointer" id="fc-card-back" onclick="flipFlashcard()" style="background: linear-gradient(145deg, #e8d5b7, #d4b896);">
+                  <div class="relative z-10 flex flex-col items-center ">
+                    <span id="fc-back-translation" class="text-xl font-bold mb-3 serif" style="color: #1a1a2e; line-height:1.2;">Hello!</span>
+                    <span id="fc-back-word" class="text-base mb-2" style="color: #3a3a5e; font-weight: 600;">¡Hola!</span>
+                    <span id="fc-back-pronunciation" class="text-xs mb-4" style="color: #5a5a7e; font-style: italic;">/OH-lah/</span>
+                    <span id="fc-back-usage" class="fc-usage-tag mb-4" style="background: rgba(26,26,46,0.1); color: #2a2a4e;">Lesson 1 vocabulary</span>
+                    <button id="fc-audio-back" class="audio-btn w-10 h-10 rounded-full flex items-center justify-center border-2" style="border-color: #1a1a2e; background: rgba(26,26,46,0.1);" aria-label="Play pronunciation">
+                      
+                    </button>
+                    <span class="mt-4 text-xs tracking-wide" style="color: #6a6a7e;">tap to flip back</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-6 mt-2">
+              <button id="fc-prev-btn" class="fc-nav-btn w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(14,165,233,0.10); border: 1px solid rgba(14,165,233,0.18);" aria-label="Previous card" onclick="prevFlashcard()">
+                
+              </button>
+              
+              <button id="fc-next-btn" class="fc-nav-btn w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(14,165,233,0.10); border: 1px solid rgba(14,165,233,0.18);" aria-label="Next card" onclick="nextFlashcard()">
+                
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      updateFlashcard();
+      lucide.createIcons();
+    }
+
+    function updateFlashcard() {
+      if (!flashcards.length) return;
+      const card = flashcards[currentFlashcardIndex];
+      const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+      const englishFirst = flashcardFrontMode === 'english';
+      setText('fc-counter', `${currentFlashcardIndex + 1} / ${flashcards.length}`);
+      setText('fc-front-word', englishFirst ? card.english : card.spanish);
+      setText('fc-front-pronunciation', englishFirst ? '' : `/${card.pronunciation}/`);
+      setText('fc-back-translation', englishFirst ? card.spanish : card.english);
+      setText('fc-back-word', englishFirst ? '' : card.spanish);
+      setText('fc-back-pronunciation', englishFirst ? `/${card.pronunciation}/` : `/${card.pronunciation}/`);
+      setText('fc-back-usage', card.usage);
+
+      const inner = document.getElementById('fc-card-inner');
+      if (inner) inner.classList.toggle('flipped', flashcardFlipped);
+
+      const frontAudio = document.getElementById('fc-audio-front');
+      const backAudio = document.getElementById('fc-audio-back');
+      if (frontAudio) {
+        frontAudio.style.display = englishFirst ? 'none' : 'flex';
+        frontAudio.onclick = (e) => { e.stopPropagation(); playAudio(frontAudio, card.spanish); };
+      }
+      if (backAudio) {
+        backAudio.style.display = englishFirst ? 'flex' : 'none';
+        backAudio.onclick = (e) => { e.stopPropagation(); playAudio(backAudio, card.spanish); };
+      }
+      const spanishBtn = document.getElementById('fc-mode-spanish-btn');
+      const englishBtn = document.getElementById('fc-mode-english-btn');
+      if (spanishBtn && englishBtn) {
+        spanishBtn.style.background = flashcardFrontMode === 'spanish' ? 'var(--accent)' : 'rgba(14,165,233,0.08)';
+        spanishBtn.style.color = flashcardFrontMode === 'spanish' ? 'white' : 'var(--accent)';
+        englishBtn.style.background = flashcardFrontMode === 'english' ? 'var(--accent)' : 'rgba(14,165,233,0.08)';
+        englishBtn.style.color = flashcardFrontMode === 'english' ? 'white' : 'var(--accent)';
+      }
+
+      const dots = document.getElementById('fc-progress-dots');
+      if (dots) {
+        dots.innerHTML = flashcards.map((_, i) => `<button class="fc-progress-dot ${i === currentFlashcardIndex ? 'active' : ''}" onclick="goToFlashcard(${i})" aria-label="Go to card ${i+1}"></button>`).join('');
+      }
+      lucide.createIcons();
+    }
+
+    window.setFlashcardFrontMode = function(mode) {
+      flashcardFrontMode = mode === 'english' ? 'english' : 'spanish';
+      flashcardFlipped = false;
+      updateFlashcard();
+    };
+
+    window.flipFlashcard = function() {
+      flashcardFlipped = !flashcardFlipped;
+      updateFlashcard();
+    };
+    window.prevFlashcard = function() {
+      currentFlashcardIndex = (currentFlashcardIndex - 1 + flashcards.length) % flashcards.length;
+      flashcardFlipped = false;
+      updateFlashcard();
+    };
+    window.nextFlashcard = function() {
+      currentFlashcardIndex = (currentFlashcardIndex + 1) % flashcards.length;
+      flashcardFlipped = false;
+      updateFlashcard();
+    };
+    window.goToFlashcard = function(i) {
+      currentFlashcardIndex = i;
+      flashcardFlipped = false;
+      updateFlashcard();
+    };
+    window.toggleFlashcardShuffle = function() {
+      shuffleMode = !shuffleMode;
+      flashcards = getFlashcardData();
+      if (shuffleMode) flashcards.sort(() => Math.random() - 0.5);
+      currentFlashcardIndex = 0;
+      flashcardFlipped = false;
+      updateFlashcard();
+      const btn = document.getElementById('fc-shuffle-btn');
+      if (btn) btn.textContent = shuffleMode ? 'Shuffle On' : 'Shuffle Mode';
+    };
+
+    function openPrintWindow(title, innerHtml) {
+      const w = window.open('', '_blank');
+      if (!w) return;
+      w.document.write(`
+        <!doctype html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>${title}</title>
+          <style>
+            body { font-family: Nunito, Arial, sans-serif; margin: 24px; color: #111827; }
+            h1,h2,h3 { font-family: 'Crimson Pro', Georgia, serif; margin: 0 0 10px; }
+            .card { border: 1px solid #d1d5db; border-radius: 12px; padding: 14px; margin-bottom: 14px; background: white; break-inside: avoid; }
+            .muted { color: #6b7280; }
+            .line { border-left: 3px solid #cbd5e1; padding-left: 10px; margin: 10px 0; }
+            .badge { display:inline-block; padding:4px 10px; border-radius:999px; background:#f3f4f6; font-size:12px; margin-right:8px; }
+            .dialogue-line { margin-bottom: 8px; }
+            .fc-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+            .fc-card { border:1px solid #d1d5db; border-radius:12px; padding:14px; min-height:120px; break-inside:avoid; text-align:center; }
+            @media print { body { margin: 0.4in; } }
+          
+/* spacing improvements */
+.section:first-of-type { margin-top: 24px; }
+.section { margin-bottom: 32px; }
+h2 { margin-top: 8px; margin-bottom: 12px; }
+h2:first-of-type { margin-top: 0; }
+.top-divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 16px 0 24px 0;
+}
+
+
+/* spacing fix */
+header { margin-bottom: 0; }
+.nav-tabs, .tabs { margin-top: 8px !important; }
+body { margin-top: 0; }
+
+</style>
+        
+  <!-- PWA / mobile install support -->
+  <meta name="theme-color" content="#0EA5E9">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SpeakThatSpanish">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+
+ </head>
+        <body>${innerHtml}
+  <script>
+    // Register service worker so the site can be installed as an app.
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js').catch(function (error) {
+          console.warn('Service worker registration failed:', error);
+        });
+      });
+    }
+  </script>
+
+ </body></html>
+      `);
+      w.document.close();
+      w.focus();
+      setTimeout(() => w.print(), 300);
+    }
+
+
+    function buildPrintableQuizHtml() {
+      if (!bonusQuizQuestions.length) buildBonusQuiz();
+      return `
+        <h1>Lesson 1 — Quiz</h1>
+        <p class="muted">Write your answers on a separate sheet or directly on this printout.</p>
+        ${bonusQuizQuestions.map((q, i) => {
+          if (q.type && q.type.startsWith('mc')) {
+            return `
+              <div class="card">
+                <div><strong>${i + 1}. ${escBonusHtml(q.prompt)}</strong></div>
+                <div class="muted">${escBonusHtml(q.badge || '')}</div>
+                <ol type="A">
+                  ${q.options.map(opt => `<li>${escBonusHtml(opt)}</li>`).join('')}
+                </ol>
+              </div>
+            `;
+          }
+          return `
+            <div class="card">
+              <div><strong>${i + 1}. ${escBonusHtml(q.prompt)}</strong></div>
+              
+            </div>
+          `;
+        }).join('')}
+      `;
+    }
+
+    function buildPrintableWorksheetHtml() {
+      if (!bonusWorksheetData.length) generateBonusWorksheet();
+      const matchData = bonusWorksheetData.find(w => w.type === 'match');
+      const fillData = bonusWorksheetData.find(w => w.type === 'fill');
+      const transData = bonusWorksheetData.find(w => w.type === 'translate');
+
+      return `
+        <h1>Lesson 1 — Worksheet</h1>
+        <div class="card">
+          <h2>Part 1: Matching</h2>
+          <p class="muted">Match each Spanish phrase with its English translation.</p>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              ${matchData.items.map((v, i) => `<div style="margin-bottom:8px;"><strong>${i + 1}.</strong> ${escBonusHtml(v.es)}</div>`).join('')}
+            </div>
+            <div>
+              ${matchData.shuffledEn.map((en, i) => `<div style="margin-bottom:8px;"><strong>${String.fromCharCode(65 + i)}.</strong> ${escBonusHtml(en)}</div>`).join('')}
+            </div>
+          </div>
+          <div style="margin-top: 14px;">
+            ${matchData.items.map((v, i) => `<div style="margin-bottom:10px;">${i + 1} → ______</div>`).join('')}
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Part 2: Fill in the Blank</h2>
+          ${fillData.items.map((s, i) => `
+            <div style="margin-bottom:16px;">
+              <div><strong>${i + 1}.</strong> ${escBonusHtml(s.text)}</div>
+              <div class="muted">Hint: ${escBonusHtml(s.hint)}</div>
+              
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="card">
+          <h2>Part 3: Translate to Spanish</h2>
+          ${transData.items.map((v, i) => `
+            <div style="margin-bottom:16px;">
+              <div><strong>${i + 1}.</strong> ${escBonusHtml(v.en)}</div>
+              
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    window.printQuiz = function() {
+      openPrintWindow('Lesson 1 Quiz', buildPrintableQuizHtml());
+    };
+
+    window.printWorksheet = function() {
+      openPrintWindow('Lesson 1 Worksheet', buildPrintableWorksheetHtml());
+    };
+
+    window.printOverview = function() {
+      const sounds = PRONUNCIATION_NOTES.map(n => `
+        <div class="card">
+          <h3>${n.sound}</h3>
+          <div>${n.example}</div>
+          <div class="muted">${n.spanish || ''}</div>
+        </div>
+      `).join('');
+
+      const vocabGroups = [
+        { title: 'Greetings', words: ['¡Hola!','Buenos días','Buenas tardes','Buenas noches'] },
+        { title: 'Goodbyes', words: ['Adiós','¡Hasta luego!','Hasta mañana'] },
+        { title: 'Polite Expressions', words: ['Gracias','Muchas gracias','De nada','Por favor','Con permiso','Perdón'] },
+        { title: 'Question & Answer Phrases', words: ['¿Cómo se dice?','Se dice'] },
+        { title: 'Titles, Welcomes, and Core Words', words: ['Señor','Señora','Bienvenido','Bienvenida','Sí','No'] }
+      ];
+
+      const vocabRows = vocabGroups.map(group => `
+        <div class="card">
+          <h2>${group.title}</h2>
+          <div class="print-grid">
+            ${VOCAB.filter(v => group.words.includes(v.es)).map(v => `
+              <div class="mini-card">
+                <strong>${v.es}</strong>
+                <div class="muted">${v.en}</div>
+                <div class="muted">${v.phonetic || ''}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      const grammar = (typeof GRAMMAR_NOTES !== 'undefined' ? GRAMMAR_NOTES : []).map(g => `
+        <div class="card">
+          <h3>${g.title}</h3>
+          <div class="muted">${g.note}</div>
+        </div>
+      `).join('');
+
+      openPrintWindow('Lesson 1 Overview', `
+        <h1>Lesson 1 — Greetings & Sounds</h1>
+        <p class="muted">Overview pronunciation, vocabulary, and grammar notes</p>
+        <style>
+          .print-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+          }
+          .mini-card {
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 10px;
+            break-inside: avoid;
+          }
+          @media print {
+            .print-grid {
+              grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+          }
+        </style>
+        <h2>Pronunciation Notes</h2>
+        ${sounds}
+        <h2>New Words & Phrases</h2>
+        ${vocabRows}
+        <h2>Grammar Notes</h2>
+        ${grammar}
+      `);
+    };
+
+
+    function buildSeparatedDialoguePrintHtml(dialogue, fallbackTitle = 'Sample Dialogue') {
+      if (!dialogue || !dialogue.lines) return '';
+      const title = dialogue.title || fallbackTitle;
+      const note = dialogue.note || '';
+      const spanish = dialogue.lines.map(l => `
+        <div class="dialogue-line">
+          <strong>${l.speaker}:</strong> ${l.text}
+        </div>
+      `).join('');
+      const english = dialogue.lines.map(l => `
+        <div class="dialogue-line">
+          <strong>${l.speaker}:</strong> ${l.en || ''}
+        </div>
+      `).join('');
+      return `
+        <div class="card">
+          <h2>${title}</h2>
+          ${note ? `<p class="muted">${note}</p>` : ''}
+          <h3>Spanish</h3>
+          ${spanish}
+          <h3 style="margin-top:14px;">English Translation</h3>
+          ${english}
+        </div>
+      `;
+    }
+
+    window.printCurrentDay = function(dayKey) {
+      const day = DAYS[dayKey];
+      const activities = currentAgeGroup === 'young' ? day.young : day.older;
+      const pack = DAY_DIALOGUES[dayKey] && DAY_DIALOGUES[dayKey][currentAgeGroup];
+
+      const cards = activities.map((act, i) => `
+        <div class="card">
+          <h3>${i + 1}. ${act.title}</h3>
+          <div><span class="badge">${act.time}</span><span class="badge">${act.materials}</span></div>
+          <div class="line"><strong>Say:</strong> ${act.moderator}</div>
+          <ol>${act.steps.map(s => `<li>${s.replace(/\*\*(.*?)\*\*/g, '$1')}</li>`).join('')}</ol>
+        </div>
+      `).join('');
+
+      const dialogueHtml = pack
+        ? (Array.isArray(pack)
+            ? pack.map((dialogue, idx) => buildSeparatedDialoguePrintHtml(dialogue, `Sample Dialogue ${idx + 1}`)).join('')
+            : buildSeparatedDialoguePrintHtml(pack, 'Sample Dialogue'))
+        : '';
+
+      openPrintWindow(
+        day.title,
+        `<h1>${day.title}</h1><p class="muted">${currentAgeGroup === 'young' ? 'Ages 2–8' : 'Ages 9+'}</p>${cards}${dialogueHtml}`
+      );
+    };
+
+    window.printDialogues = function() {
+      const dialogs = DIALOGUES.map((d, idx) => buildSeparatedDialoguePrintHtml(d, `Sample Dialogue ${idx + 1}`)).join('');
+      openPrintWindow('Lesson 1 Dialogues', `<h1>Lesson 1 — Sample Dialogues</h1>${dialogs}`);
+    };
+
+
+    window.printFlashcards = function() {
+      const grid = bonusFlashcards.map(card => `
+        <div class="fc-card">
+          <h3>${card.front}</h3>
+          <div class="muted">${card.phonetic || ''}</div>
+          <hr style="margin:12px 0; border:none; border-top:1px dashed #9ca3af;">
+          <div><strong>${card.back}</strong></div>
+          <div class="muted">${card.cat}</div>
+        </div>
+      `).join('');
+      openPrintWindow('Lesson 1 Flashcards', `<h1>Lesson 1 — Printable Flashcards</h1><div class="fc-grid">${grid}</div>`);
+    };
+
+
+    window.playOverviewCard = function(card) {
+      const text = card.innerText.replace(/\s+/g, ' ').trim();
+      if (!text) return;
+      AudioEngine.playClick();
+      card.classList.add('playing');
+      // Prefer the first line / bold text if present
+      const firstStrong = card.querySelector('strong');
+      const firstAudioText = firstStrong ? firstStrong.innerText.trim() : text.split('—')[0].split('\n')[0].trim();
+      AudioEngine.speak(firstAudioText).then(() => card.classList.remove('playing'));
+    };
+
+    // ========== INIT ==========
+    const defaultConfig = {
+      curriculum_title: '¡Hola! Spanish',
+      lesson_title: 'Lesson 1: Greetings & Sounds',
+      background_color: '#FFF8F0',
+      surface_color: '#FFFFFF',
+      text_color: '#3D2C1E',
+      accent_color: '#EA580C',
+      accent2_color: '#B45309',
+      font_family: 'Nunito',
+      font_size: 16,
+    };
+
+    function applyConfig(config) {
+      const bg = config.background_color || defaultConfig.background_color;
+      const surface = config.surface_color || defaultConfig.surface_color;
+      const text = config.text_color || defaultConfig.text_color;
+      const accent = config.accent_color || defaultConfig.accent_color;
+      const accent2 = config.accent2_color || defaultConfig.accent2_color;
+      const font = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+
+      document.documentElement.style.setProperty('--bg', bg);
+      document.documentElement.style.setProperty('--surface', surface);
+      document.documentElement.style.setProperty('--text', text);
+      document.documentElement.style.setProperty('--accent', accent);
+      document.documentElement.style.setProperty('--accent2', accent2);
+
+      document.body.style.background = bg;
+      document.body.style.color = text;
+      document.body.style.fontFamily = `${font}, Nunito, sans-serif`;
+      document.body.style.fontSize = `${fontSize}px`;
+
+      const title = document.getElementById('main-title');
+      const lessonTitle = document.getElementById('lesson-title');
+      if (title) {
+        title.textContent = config.curriculum_title || defaultConfig.curriculum_title;
+        title.style.fontFamily = `${font}, Nunito, sans-serif`;
+        title.style.fontSize = `${fontSize * 1.15}px`;
+      }
+      if (lessonTitle) {
+        lessonTitle.textContent = config.lesson_title || defaultConfig.lesson_title;
+        lessonTitle.style.fontFamily = `${font}, Nunito, sans-serif`;
+        lessonTitle.style.fontSize = `${fontSize * 0.75}px`;
+      }
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+          applyConfig(config);
+        },
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+            { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+            { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+            { get: () => config.accent_color || defaultConfig.accent_color, set: (v) => { config.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); } },
+            { get: () => config.accent2_color || defaultConfig.accent2_color, set: (v) => { config.accent2_color = v; window.elementSdk.setConfig({ accent2_color: v }); } },
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => config.font_family || defaultConfig.font_family,
+            set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+          },
+          fontSizeable: {
+            get: () => config.font_size || defaultConfig.font_size,
+            set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+          },
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ['curriculum_title', config.curriculum_title || defaultConfig.curriculum_title],
+          ['lesson_title', config.lesson_title || defaultConfig.lesson_title],
+        ]),
+      });
+    }
+
+    renderContent();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e201cca72d55dcb',t:'MTc3NDQ2NDc0NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+  <script>
+    // Register service worker so the site can be installed as an app.
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js').catch(function (error) {
+          console.warn('Service worker registration failed:', error);
+        });
+      });
+    }
+  </script>
+
+ </body>
+</html>
